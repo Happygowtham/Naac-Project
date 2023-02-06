@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'naac_app',
     'rest_framework',
 ]
 
@@ -79,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': "NAAC",
         'USER': "postgres",
-        'PASSWORD': "root",
+        'PASSWORD': "postgres",
         'HOST': "localhost",
         'PORT': '5432'
     }
