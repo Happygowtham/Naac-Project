@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.contrib.auth import get_user_model
+from .criteria import Criteria
 
 
 class UserManager(BaseUserManager):
@@ -8,23 +9,24 @@ class UserManager(BaseUserManager):
 
     use_in_migrations = True
 
-    def _create_user(self, email, password, **extra_fields):
+    def _create_user(self, username, password, email, **extra_fields):
         print('password: ', password)
         """Create and save a User with the given email and password."""
         if not email:
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
 
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
+        user = self.model(username=username, **extra_fields)
         user.save(using=self._db)
+        user.set_password(password)
+        user.save()
         return user
 
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, email, password=None, username=None, **extra_fields):
         """Create and save a regular User with the given email and password."""
-        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
+        return self._create_user(username, password, email, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
         """Create and save a SuperUser with the given email and password."""
@@ -41,8 +43,10 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     pimg = models.TextField(null=True)
-
-    USERNAME_FIELD = "username"
+    faculty_code = models.CharField(null=True, max_length=5)
+    access = models.ManyToManyField(Criteria)
+    access_year_from = models.IntegerField()
+    access_year_to = models.IntegerField()
 
     objects = UserManager()
 

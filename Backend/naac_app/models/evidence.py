@@ -1,5 +1,5 @@
 from django.db import models
-from . import Criteria, Metrics, Location
+from . import Criteria, Metrics, Location, User
 
 
 class Evidence(models.Model):
@@ -12,6 +12,7 @@ class Evidence(models.Model):
     status = models.CharField(max_length=25, null=False)
     evidence_file = models.FileField()
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    incharge = models.ManyToManyField(User)
 
     class Meta:
         db_table = "evidence"

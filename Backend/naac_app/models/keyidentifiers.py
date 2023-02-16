@@ -1,5 +1,6 @@
 from django.db import models
 from .criteria import Criteria
+from .user import User
 
 
 class KeyIdentifiers(models.Model):
@@ -9,6 +10,7 @@ class KeyIdentifiers(models.Model):
     number = models.IntegerField(null=False)
     title = models.CharField(max_length=25, null=False)
     weightage = models.CharField(max_length=256)
+    incharge = models.ManyToManyField(User)
 
     class Meta:
         db_table = "key_identifiers"
