@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_flex_fields import FlexFieldsModelSerializer
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 
 User = get_user_model()
 
@@ -19,3 +19,10 @@ class UserSerializer(FlexFieldsModelSerializer):
             'date_joined': {'read_only': True},
             'password': {'write_only': True, 'required': False}
         }
+    
+    def create(self, validated_data):
+        user = super(UserSerializer, self).create(validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
