@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
+AUTH_USER_MODEL = 'naac_app.user'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -84,7 +86,6 @@ DATABASES = {
         'HOST': "localhost",
         'PORT': '5432'
     }
-
 }
 
 
