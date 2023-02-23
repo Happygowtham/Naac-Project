@@ -1,1 +1,4 @@
 django==3.2
+djangorestframework==3.14.0
+psycopg2==2.9.5
+drf-flex-fields==1.0.0
