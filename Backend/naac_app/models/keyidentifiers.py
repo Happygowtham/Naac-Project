@@ -7,8 +7,8 @@ class KeyIdentifiers(models.Model):
     key_identifiers_id = models.AutoField(primary_key=True)
     criteria = models.ForeignKey(
         Criteria, on_delete=models.CASCADE, null=False, db_constraint=False)
-    number = models.IntegerField(null=False)
-    title = models.CharField(max_length=25, null=False)
+    number = models.FloatField(null=False)
+    title = models.CharField(max_length=100, null=False)
     weightage = models.CharField(max_length=256)
     incharge = models.ManyToManyField(User)
 

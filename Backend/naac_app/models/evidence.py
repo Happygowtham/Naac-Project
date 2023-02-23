@@ -7,7 +7,7 @@ class Evidence(models.Model):
     year_to = models.IntegerField(null=False)
     criteria = models.ForeignKey(Criteria, on_delete=models.CASCADE)
     metrics = models.ForeignKey(Metrics, on_delete=models.CASCADE)
-    evidence_number = models.IntegerField(null=False)
+    evidence_number = models.CharField(max_length=25, null=False)
     description = models.TextField(null=True)
     status = models.CharField(max_length=25, null=False)
     evidence_file = models.FileField()

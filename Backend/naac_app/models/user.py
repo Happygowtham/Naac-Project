@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', False)
         return self._create_user(username, password, email, **extra_fields)
 
-    def create_superuser(self, email, password, **extra_fields):
+    def create_superuser(self, email, password, username=None, **extra_fields):
         """Create and save a SuperUser with the given email and password."""
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
@@ -38,15 +38,15 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self._create_user(email, password, **extra_fields)
+        return self._create_user(username, email, password, **extra_fields)
 
 
 class User(AbstractUser):
     pimg = models.TextField(null=True)
     faculty_code = models.CharField(null=True, max_length=5)
     access = models.ManyToManyField(Criteria)
-    access_year_from = models.IntegerField()
-    access_year_to = models.IntegerField()
+    access_year_from = models.IntegerField(null=True, )
+    access_year_to = models.IntegerField(null=True, )
 
     objects = UserManager()
 

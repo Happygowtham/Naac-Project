@@ -4,7 +4,7 @@ from django.db import models
 class Criteria(models.Model):
     criteria_id = models.AutoField(primary_key=True)
     number = models.IntegerField(null=False)
-    title = models.CharField(max_length=25, null=False)
+    title = models.CharField(max_length=50, null=False)
     qualitative_count = models.IntegerField()
     quantitative_count = models.IntegerField()
 
