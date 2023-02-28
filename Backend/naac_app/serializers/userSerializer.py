@@ -2,14 +2,15 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_flex_fields import FlexFieldsModelSerializer
 # from django.contrib.auth.models import User
+from rest_framework.serializers import SerializerMethodField
+
 
 User = get_user_model()
 
 
 class UserSerializer(FlexFieldsModelSerializer):
     role_value = serializers.ReadOnlyField(source="get_role_display")
-    institution_name = serializers.ReadOnlyField(
-        source="institution.company_name")
+    criteria = SerializerMethodField()
 
     class Meta:
         model = User
@@ -25,4 +26,9 @@ class UserSerializer(FlexFieldsModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+    def get_criteria(self, obj):
+        print('obj: ', obj.access)
+
+
 

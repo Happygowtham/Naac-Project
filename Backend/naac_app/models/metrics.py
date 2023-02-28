@@ -3,6 +3,12 @@ from .keyidentifiers import KeyIdentifiers
 from .criteria import Criteria
 
 
+TYPE_CHOICES = (
+    ('QLM', 'Qualitative Count'),
+    ('QNM', 'Quantitative Count'),
+)
+
+
 class Metrics(models.Model):
     metric_id = models.AutoField(primary_key=True)
     criteria = models.ForeignKey(
@@ -10,10 +16,12 @@ class Metrics(models.Model):
     key_identifier = models.ForeignKey(
         KeyIdentifiers, on_delete=models.CASCADE, null=False, db_constraint=False)
     number = models.CharField(max_length=25,null=False)
-    type = models.CharField(max_length=25, null=False)
+    type = models.CharField(
+        max_length=3, choices=TYPE_CHOICES, null=True)
     score = models.IntegerField(null=True)
-    question = models.CharField(max_length=25, null=True)
-    answer = models.CharField(max_length=25, null=True)
+    question = models.CharField(max_length=254, null=True, blank=True)
+    answer = models.TextField(null=True, blank=True)
+
 
     class Meta:
         db_table = "metrics"
