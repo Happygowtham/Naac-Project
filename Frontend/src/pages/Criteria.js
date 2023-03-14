@@ -1,16 +1,18 @@
+import { useState } from "react";
 import { useEffect } from "react";
 import axiosInstance from "src/AxiosInstance"
 
 
 export default function CriteriaPage() {
 
+    const [criteriaData, setCriteriaData] = useState([]);
+
     useEffect(() => {
         axiosInstance(`criteria/`, {
             method: "GET",
-            data: {}
         })
             .then((res) => {
-                console.log('res: ', res);
+                setCriteriaData(res?.data);
             }).catch(err => {
                 console.log('err: ', err);
             })
@@ -19,7 +21,16 @@ export default function CriteriaPage() {
 
     return (
         <>
-            Criteria
+            {
+                criteriaData?.map((res, id) => {
+                    console.log('res: ', res);
+                    return (
+                        <>
+                            {id + 1} - {res?.title} <br />
+                        </>
+                    )
+                })
+            }
         </>
     )
 }

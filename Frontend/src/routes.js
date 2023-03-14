@@ -8,8 +8,8 @@ import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
-import DashboardAppPage from './pages/DashboardAppPage';
 import CriteriaPage from './pages/Criteria';
+import Dashboard from './pages/Dashboard';
 
 // ----------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { element: <Navigate to="/login" />, index: true },
-        { path: 'app', element: <DashboardAppPage /> },
+        { path: 'dashboard', element: <Dashboard /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },

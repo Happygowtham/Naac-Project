@@ -14,7 +14,7 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClick = () => {
-    navigate('/app');
+    navigate('/dashboard');
   };
 
   return (

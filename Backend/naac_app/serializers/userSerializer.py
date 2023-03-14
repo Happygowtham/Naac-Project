@@ -29,6 +29,9 @@ class UserSerializer(FlexFieldsModelSerializer):
 
     def get_criteria(self, obj):
         print('obj: ', obj.access)
+        data = obj.access.all()
+        # serialized=UserSerializer(data, many=True)
+        # return serialized.data
 
 
 
