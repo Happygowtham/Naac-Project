@@ -14,6 +14,7 @@ import Dashboard from './pages/Dashboard';
 // ----------------------------------------------------------------------
 
 export default function Router() {
+
   const routes = useRoutes([
     {
       path: '/',

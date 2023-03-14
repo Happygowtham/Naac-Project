@@ -3,4 +3,4 @@ from .KeyIdentifiersViewset import KeyIdentifiersViewSet
 from .metricViewset import MetricViewSet
 from .locationViewset import LocationViewSet
 from .evidenceViewset import EvidenceViewSet
-from .userViewset import UserViewSet
+from .userViewset import UserViewSet, AuthViewSet
