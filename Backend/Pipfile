@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 django = "==3.2"
 djangorestframework-simplejwt = "*"
+django-filter = "*"
 
 [dev-packages]
 
