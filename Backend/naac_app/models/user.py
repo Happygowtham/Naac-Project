@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
-from django.contrib.auth import get_user_model
 from .criteria import Criteria
 
 
@@ -55,3 +54,12 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.first_name or self.email
+    
+    @property
+    def get_access(self):
+        access = self.access.all()
+        skills_list = []
+        for skill in access:
+            skills_list.append(skill.title)
+
+        return skills_list

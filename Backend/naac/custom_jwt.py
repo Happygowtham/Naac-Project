@@ -6,7 +6,9 @@ from naac_app.models import User
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-        data['user'] = User.objects.values().filter(id=self.user.id)[0]
+        user = User.objects.values().filter(id=self.user.id)[0]
+        data['user'] = user
+        data['accesses'] = User.objects.get(id=user['id']).access.values()
         return data
 
     # @classmethod
