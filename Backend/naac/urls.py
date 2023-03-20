@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from .custom_jwt import CustomTokenObtainPairView
 
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include('naac_app.urls')),
     path('admin/', admin.site.urls),
+    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain'),
 ]
