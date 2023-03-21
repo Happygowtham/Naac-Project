@@ -5,6 +5,7 @@ import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@m
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
+import axiosInstance from 'src/AxiosInstance';
 
 // ----------------------------------------------------------------------
 
@@ -12,20 +13,32 @@ export default function LoginForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [data, setData] = useState({});
 
   const handleClick = () => {
     navigate('/dashboard');
   };
 
+  const handleSignin = () => {
+    axiosInstance(`token/`, { method: "POST", data: data })
+      .then(res => {
+        console.log('res: ', res);
+        axiosInstance.defaults.headers['Authorization'] = "JWT " + res.data.access;
+        localStorage.setItem("user", btoa(JSON.stringify(res?.data)));
+        navigate("/dashboard");
+      })
+  }
+
   return (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
+        <TextField name="username" label="User Name" onChange={(e) => setData({ ...data, username: e.target.value })} />
 
         <TextField
           name="password"
           label="Password"
           type={showPassword ? 'text' : 'password'}
+          onChange={(e) => setData({ ...data, password: e.target.value })}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -45,7 +58,7 @@ export default function LoginForm() {
         </Link>
       </Stack>
 
-      <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
+      <LoadingButton fullWidth size="large" variant="contained" onClick={handleSignin}>
         Login
       </LoadingButton>
     </>

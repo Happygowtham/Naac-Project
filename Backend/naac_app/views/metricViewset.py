@@ -8,4 +8,4 @@ from rest_framework import viewsets
 class MetricViewSet(viewsets.ModelViewSet):
     queryset = Metrics.objects.all()
     serializer_class = MetricSerializer
-    filterset_fields = ['criteria', 'key_identifier']
+    filterset_fields = ['criteria']

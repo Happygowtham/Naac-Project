@@ -1,50 +1,49 @@
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
-import SimpleLayout from './layouts/simple';
 //
 import BlogPage from './pages/BlogPage';
-import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import CriteriaPage from './pages/Criteria';
 import Dashboard from './pages/Dashboard';
+import Metrics from './pages/Metrics';
 
 // ----------------------------------------------------------------------
+const PrivateRoute = ({ component: Component, ...rest }) => {
+
+  var isAuthenticated = JSON.parse(atob(localStorage.getItem('user')))?.access
+
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        isAuthenticated ? (
+          <DashboardLayout>
+            <Component {...props} />
+          </DashboardLayout>
+        ) : (
+          <Navigate to='/' />
+        )
+      }
+    />
+  );
+};
+
 
 export default function Router() {
+  return (
+    <Routes>
+      <Route path='*' element={<Page404 />} />
+      <Route path='/' element={<LoginPage />} />
+      <Route path='/dashboard' element={<Dashboard />} />
+      <Route path='/metrics/:id' element={<Metrics />} />
+      {/*<PrivateRoute path='/criteria' element={<CriteriaPage />} />
+      <PrivateRoute path='/products' element={<ProductsPage />} />
+      <PrivateRoute path='/blog' element={<BlogPage />} /> */}
+    </Routes>
 
-  const routes = useRoutes([
-    {
-      path: '/',
-      element: <DashboardLayout />,
-      children: [
-        { element: <Navigate to="/login" />, index: true },
-        { path: 'dashboard', element: <Dashboard /> },
-        { path: 'user', element: <UserPage /> },
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
-        { path: 'criteria', element: <CriteriaPage /> },
-      ],
-    },
-    {
-      path: 'login',
-      element: <LoginPage />,
-    },
-    {
-      element: <SimpleLayout />,
-      children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
-        { path: '404', element: <Page404 /> },
-        { path: '*', element: <Navigate to="/404" /> },
-      ],
-    },
-    {
-      path: '*',
-      element: <Navigate to="/404" replace />,
-    },
-  ]);
+  )
 
-  return routes;
 }

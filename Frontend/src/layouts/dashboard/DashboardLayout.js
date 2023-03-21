@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Route } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
 //
@@ -32,17 +32,15 @@ const Main = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout() {
+export default function DashboardLayout({ children }) {
   const [open, setOpen] = useState(false);
 
   return (
     <StyledRoot>
       <Header onOpenNav={() => setOpen(true)} />
-
       <Nav openNav={open} onCloseNav={() => setOpen(false)} />
-
       <Main>
-        <Outlet />
+        {children}
       </Main>
     </StyledRoot>
   );

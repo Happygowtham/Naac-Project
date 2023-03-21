@@ -1,28 +1,17 @@
-import axios from "axios";
+import axios from 'axios';
 
+import { Config } from './config';
 
-const axiosInstance = axios.create({
-    headers: { 'content-type': 'application/json' }
-});
-
-axiosInstance.interceptors.request.use(
-    (config) => {
-        const hrmsbearertoken = "";
-        config.headers.Authorization = hrmsbearertoken
-            ? `Bearer ${hrmsbearertoken}`
-            : "";
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
+var configData = Config();
+const axiosInstance = axios.create(configData);
 
 axiosInstance.interceptors.response.use(
-    (response) => Promise.resolve(response),
-    async (error) => {
+    response => response,
+    error => {
+        if (error?.response?.status === 401) {
+            window.location.href = "/";
+        }
         return Promise.reject(error);
     }
 );
-
 export default axiosInstance;
