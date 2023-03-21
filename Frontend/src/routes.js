@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 //
@@ -32,13 +32,20 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 };
 
 
+function PrivateOutlet() {
+  var auth = (localStorage.getItem('user') && JSON.parse(atob(localStorage.getItem('user')))?.access) || false;
+  return auth ? <DashboardLayout><Outlet /></DashboardLayout> : <Navigate to="/login" />;
+}
+
 export default function Router() {
   return (
     <Routes>
       <Route path='*' element={<Page404 />} />
-      <Route path='/' element={<LoginPage />} />
-      <Route path='/dashboard' element={<Dashboard />} />
-      <Route path='/metrics/:id' element={<Metrics />} />
+      <Route path='/login' element={<LoginPage />} />
+      <Route path="/" element={<PrivateOutlet />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path='/metrics/:id' element={<Metrics />} />
+      </Route>
       {/*<PrivateRoute path='/criteria' element={<CriteriaPage />} />
       <PrivateRoute path='/products' element={<ProductsPage />} />
       <PrivateRoute path='/blog' element={<BlogPage />} /> */}

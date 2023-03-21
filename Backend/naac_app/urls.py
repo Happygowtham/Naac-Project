@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
-from naac_app.views import KeyIdentifiersViewSet, CriteriaViewSet, MetricViewSet, LocationViewSet, EvidenceViewSet, UserViewSet
+from naac_app.views import KeyIdentifiersViewSet, CriteriaViewSet, MetricViewSet, LocationViewSet, EvidenceViewSet, UserViewSet,MetricBulkCreate
 
 router = routers.DefaultRouter()
 router.register('criteria', CriteriaViewSet, basename='criteria')
@@ -15,4 +15,5 @@ router.register('user', UserViewSet, basename='user')
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
+    path('metrics-bulk-create/', MetricBulkCreate.as_view(), name='metric-bulk-create')
 ]
