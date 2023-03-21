@@ -9,35 +9,24 @@ import ProductsPage from './pages/ProductsPage';
 import CriteriaPage from './pages/Criteria';
 import Dashboard from './pages/Dashboard';
 import Metrics from './pages/Metrics';
-
-// ----------------------------------------------------------------------
-const PrivateRoute = ({ component: Component, ...rest }) => {
-
-  var isAuthenticated = JSON.parse(atob(localStorage.getItem('user')))?.access
-
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        isAuthenticated ? (
-          <DashboardLayout>
-            <Component {...props} />
-          </DashboardLayout>
-        ) : (
-          <Navigate to='/' />
-        )
-      }
-    />
-  );
-};
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 function PrivateOutlet() {
-  var auth = (localStorage.getItem('user') && JSON.parse(atob(localStorage.getItem('user')))?.access) || false;
+  var auth = (localStorage.getItem('naac_dbcy_user') && JSON.parse(atob(localStorage.getItem('naac_dbcy_user')))?.access) || false;
   return auth ? <DashboardLayout><Outlet /></DashboardLayout> : <Navigate to="/login" />;
 }
 
 export default function Router() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    window.addEventListener("beforeunload", () => {
+      localStorage.clear();
+      navigate('/login');
+    });
+    return () => window.removeEventListener("beforeunload", () => { });
+  });
   return (
     <Routes>
       <Route path='*' element={<Page404 />} />
@@ -45,10 +34,10 @@ export default function Router() {
       <Route path="/" element={<PrivateOutlet />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path='/metrics/:id' element={<Metrics />} />
+        <Route path='/criteria' element={<CriteriaPage />} />
+        <Route path='/products' element={<ProductsPage />} />
+        <Route path='/blog' element={<BlogPage />} />
       </Route>
-      {/*<PrivateRoute path='/criteria' element={<CriteriaPage />} />
-      <PrivateRoute path='/products' element={<ProductsPage />} />
-      <PrivateRoute path='/blog' element={<BlogPage />} /> */}
     </Routes>
 
   )

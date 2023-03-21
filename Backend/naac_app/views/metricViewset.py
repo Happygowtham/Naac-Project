@@ -11,6 +11,8 @@ class MetricViewSet(viewsets.ModelViewSet):
     serializer_class = MetricSerializer
     filterset_fields = ['criteria']
 
+    
+
 class MetricBulkCreate(APIView):
     def post(self, request):
         data = request.data

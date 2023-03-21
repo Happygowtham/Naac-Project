@@ -35,6 +35,7 @@ Nav.propTypes = {
 
 export default function Nav({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
+  const data = JSON.parse(atob(localStorage.getItem('naac_dbcy_user')))
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -63,11 +64,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
-              </Typography>
-
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
+                {data?.user?.first_name}
               </Typography>
             </Box>
           </StyledAccount>

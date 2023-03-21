@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Dashboard() {
 
-    const data = JSON.parse(atob(localStorage.getItem('user')))
+    const data = JSON.parse(atob(localStorage.getItem('naac_dbcy_user')))
     var criData = data?.accesses
 
     return (
