@@ -26,9 +26,3 @@ class UserSerializer(FlexFieldsModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-
-    def get_criteria(self, obj):
-        print('obj: ', obj.access)
-        data = obj.access.all()
-        # serialized=UserSerializer(data, many=True)
-        # return serialized.data

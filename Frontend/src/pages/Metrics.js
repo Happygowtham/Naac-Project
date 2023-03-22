@@ -1,7 +1,7 @@
-import { Box, Button, Card, TextField } from "@mui/material";
+import { Box, Button, Card, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "src/AxiosInstance";
 
 
@@ -9,7 +9,7 @@ const Metrics = () => {
 
     const { id } = useParams();
     const [metricData, setMetricData] = useState([]);
-    console.log('metricData: ', metricData);
+    const navigate = useNavigate()
 
     useEffect(() => {
         axiosInstance(`/metrics/?criteria=${id}`, { method: "GET" })
@@ -36,6 +36,10 @@ const Metrics = () => {
 
     return (
         <>
+            <Box sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
+                <Typography variant="h5" sx={{ pl: 2 }}>{metricData?.[0]?.criteria?.name}</Typography>
+                <Button sx={{ mr: 2 }} variant="contained" color="error" onClick={() => navigate("/dashboard")}>Back</Button>
+            </Box>
             {
                 metricData?.map((res, id) => {
                     return (
@@ -70,6 +74,7 @@ const Metrics = () => {
                 })
             }
             <Box sx={{ display: "flex", justifyContent: "flex-end", m: 1 }}>
+                <Button sx={{ mr: 2 }} variant="contained" color="error" onClick={() => navigate("/dashboard")}>Cancel</Button>
                 <Button variant="contained" onClick={handleSubmit}>Submit</Button>
             </Box>
         </>

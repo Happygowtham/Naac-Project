@@ -7,11 +7,11 @@ from rest_framework.views import APIView
 
 
 class MetricViewSet(viewsets.ModelViewSet):
+    
     queryset = Metrics.objects.all()
     serializer_class = MetricSerializer
     filterset_fields = ['criteria']
 
-    
 
 class MetricBulkCreate(APIView):
     def post(self, request):
@@ -30,3 +30,31 @@ class MetricBulkCreate(APIView):
                 ))
         Metrics.objects.bulk_create(metrics)
         return Response("success")
+
+
+class MetricBulkUpdate(APIView):
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        metric_ids = [i['metric_id'] for i in data]
+        instances = []
+        for temp_dict in data:
+            metric_id = temp_dict['metric_id']
+            number = temp_dict['number']
+            score = temp_dict['score']
+            question = temp_dict['question']
+            type = temp_dict['type']
+            key_identifier = KeyIdentifiers.objects.get(key_identifiers_id=temp_dict['key_identifier']),
+            answer = temp_dict['answer']
+            criteria = Criteria.objects.get(criteria_id=temp_dict['criteria'])
+            obj = self.get_object(metric_id)
+            obj.number = number
+            obj.score = score
+            obj.question = question
+            obj.type = type
+            obj.key_identifier = key_identifier
+            obj.answer = answer
+            obj.criteria = criteria
+            obj.save()
+            instances.append(obj)
+        serializer = MetricSerializer(instances, many=True)
+        return Response("Updated")
