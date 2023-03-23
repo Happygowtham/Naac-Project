@@ -13,6 +13,6 @@ class UserViewSet(viewsets.ModelViewSet):
         qs = super().get_queryset()
         params = self.request.query_params
         if 'access_ids' in params:
-            print('access_ids',type(params['access_ids']))
-            qs = qs.filter(access__in=params['access_ids']).distinct()
+            ids = [int(i) for i in params['access_ids'].split(',')]
+            qs = qs.filter(access__in=ids).distinct()
         return qs
