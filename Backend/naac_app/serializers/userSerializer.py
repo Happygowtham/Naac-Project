@@ -10,7 +10,6 @@ User = get_user_model()
 
 class UserSerializer(FlexFieldsModelSerializer):
     role_value = serializers.ReadOnlyField(source="get_role_display")
-    criteria = SerializerMethodField()
 
     class Meta:
         model = User

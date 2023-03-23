@@ -43,7 +43,7 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     pimg = models.TextField(null=True)
     faculty_code = models.CharField(null=True, max_length=5)
-    access = models.ManyToManyField(Criteria)
+    access = models.ManyToManyField(Criteria, related_name="user_access")
     access_year_from = models.IntegerField(null=True, )
     access_year_to = models.IntegerField(null=True, )
 
