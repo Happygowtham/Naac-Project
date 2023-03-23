@@ -30,12 +30,9 @@ class MetricBulkCreate(APIView):
                 ))
         Metrics.objects.bulk_create(metrics)
         return Response("success")
-
-
-class MetricBulkUpdate(APIView):
+    
     def put(self, request, *args, **kwargs):
         data = request.data
-        metric_ids = [i['metric_id'] for i in data]
         instances = []
         for temp_dict in data:
             metric_id = temp_dict['metric_id']
@@ -43,10 +40,10 @@ class MetricBulkUpdate(APIView):
             score = temp_dict['score']
             question = temp_dict['question']
             type = temp_dict['type']
-            key_identifier = KeyIdentifiers.objects.get(key_identifiers_id=temp_dict['key_identifier']),
+            key_identifier = KeyIdentifiers.objects.get(key_identifiers_id=temp_dict['key_identifier'])
             answer = temp_dict['answer']
             criteria = Criteria.objects.get(criteria_id=temp_dict['criteria'])
-            obj = self.get_object(metric_id)
+            obj =Metrics.objects.get(metric_id=metric_id) # self.get_object(metric_id)
             obj.number = number
             obj.score = score
             obj.question = question

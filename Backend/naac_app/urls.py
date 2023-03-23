@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
-from naac_app.views import KeyIdentifiersViewSet, CriteriaViewSet, MetricViewSet, LocationViewSet, EvidenceViewSet, UserViewSet,MetricBulkCreate, MetricBulkUpdate
+from naac_app.views import KeyIdentifiersViewSet, CriteriaViewSet, MetricViewSet, LocationViewSet, EvidenceViewSet, UserViewSet,MetricBulkCreate
 
 router = routers.DefaultRouter()
 router.register('criteria', CriteriaViewSet, basename='criteria')
@@ -16,5 +16,5 @@ router.register('user', UserViewSet, basename='user')
 urlpatterns = [
     path('', include(router.urls)),
     path('metrics-bulk-create/', MetricBulkCreate.as_view(), name='metric-bulk-create'),
-    path('metrics-bulk-update/', MetricBulkUpdate.as_view(), name='metric-bulk-update')
+    # path('metrics-bulk-update/', MetricBulkUpdate.as_view(), name='metric-bulk-update')
 ]
