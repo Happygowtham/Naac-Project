@@ -28,9 +28,9 @@ const Metrics = () => {
     }
 
     const handleSubmit = () => {
-        axiosInstance(`/metrics-bulk-create/`, { method: "POST", data: metricData })
+        axiosInstance(`/metrics-bulk-create/`, { method: "PUT", data: metricData })
             .then(res => {
-                alert(res);
+                alert("Success");
             })
     }
 
