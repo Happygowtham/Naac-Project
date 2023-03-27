@@ -56,11 +56,11 @@ const MetricsView = () => {
                 <Typography variant="h5" sx={{ pl: 2 }}>{metricData?.[0]?.criteria?.id}. {metricData?.[0]?.criteria?.name}</Typography>
                 <Box>
                     {canEdit ? viewMode === "View" ?
-                        <Button sx={{ mr: 2 }} variant="contained" color="primary" onClick={() => setViewMode("Edit")}>Edit</Button>
-                        : <Button sx={{ mr: 2 }} variant="contained" color="primary" onClick={() => handleView()}>View</Button>
+                        <Button size="small" sx={{ mr: 2 }} variant="contained" color="primary" onClick={() => setViewMode("Edit")}>Edit</Button>
+                        : <Button size="small" sx={{ mr: 2 }} variant="contained" color="primary" onClick={() => handleView()}>View</Button>
                         : ""
                     }
-                    <Button sx={{ mr: 2 }} variant="contained" color="error" onClick={() => navigate("/dashboard")}>Back</Button>
+                    <Button sx={{ mr: 2 }} size="small" variant="contained" color="error" onClick={() => navigate("/dashboard")}>Back</Button>
                 </Box>
             </Box>
             {

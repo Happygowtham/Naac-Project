@@ -1,0 +1,20 @@
+.upload_doc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: rgb(145, 158, 171);
+    cursor: pointer;
+}
+
+.css-1ngw63v {
+    width: 20px;
+    height: 20px;
+}
+
+.css-1o38g2n {
+    margin: 0px;
+    line-height: 1.57143;
+    font-size: 0.875rem;
+    font-family: "Public Sans", sans-serif;
+    font-weight: 400;
+}

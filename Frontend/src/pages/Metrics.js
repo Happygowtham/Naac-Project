@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "src/AxiosInstance";
 import { styled } from '@mui/material/styles';
+import Upload from "./Upload";
 
 
 const StyledContent = styled('div')(({ theme }) => ({
@@ -57,7 +58,10 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                     return (
                         <>
                             <Card sx={{ p: 2, m: 1 }}>
-                                {res?.number} - {res?.question} <br />
+                                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                                    <Typography>{res?.number} - {res?.question}</Typography>
+                                    <Upload />
+                                </Box>
                                 {
                                     res?.type === "QLM" ?
                                         <TextField
@@ -97,8 +101,8 @@ const MetricsEdit = ({ setViewMode, getData }) => {
             {
                 metricData?.length > 0 &&
                 <Box sx={{ display: "flex", justifyContent: "flex-end", m: 1 }}>
-                    <Button sx={{ mr: 2 }} variant="contained" color="error" onClick={() => handleCancel()}>Cancel</Button>
-                    <Button variant="contained" onClick={handleSubmit}>Submit</Button>
+                    <Button size="small" sx={{ mr: 2 }} variant="contained" color="error" onClick={() => handleCancel()}>Cancel</Button>
+                    <Button size="small" variant="contained" onClick={handleSubmit}>Submit</Button>
                 </Box>
             }
         </>
