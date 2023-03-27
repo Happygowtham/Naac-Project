@@ -1,15 +1,24 @@
-import { Box, Button, Card, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, Container, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axiosInstance from "src/AxiosInstance";
+import { styled } from '@mui/material/styles';
 
 
-const Metrics = () => {
+const StyledContent = styled('div')(({ theme }) => ({
+    margin: 'auto',
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    padding: theme.spacing(12, 0),
+}));
+
+
+const MetricsEdit = ({ setViewMode, getData }) => {
 
     const { id } = useParams();
     const [metricData, setMetricData] = useState([]);
-    const navigate = useNavigate()
 
     useEffect(() => {
         axiosInstance(`/metrics/?criteria=${id}`, { method: "GET" })
@@ -22,26 +31,29 @@ const Metrics = () => {
     const handleChange = (event, index) => {
         let newArr = [...metricData];
         let item = newArr[index];
-        item = { ...item, answer: event.target.value };
+        item = { ...item, answer: event.target.value, criteria: typeof item?.criteria === "object" ? item?.criteria?.id : item?.criteria };
         newArr[index] = item;
         setMetricData(newArr);
     }
 
     const handleSubmit = () => {
-        axiosInstance(`/metrics-bulk-create/`, { method: "PUT", data: metricData })
+        let newArr = []
+        metricData?.forEach(res => newArr?.push({ ...res, criteria: typeof res?.criteria === "object" ? res?.criteria?.id : res?.criteria }))
+        axiosInstance(`/metrics-bulk-create/`, { method: "PUT", data: newArr })
             .then(res => {
                 alert("Success");
             })
     }
 
+    const handleCancel = () => {
+        getData();
+        setViewMode("View")
+    }
+
     return (
         <>
-            <Box sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
-                <Typography variant="h5" sx={{ pl: 2 }}>{metricData?.[0]?.criteria?.name}</Typography>
-                <Button sx={{ mr: 2 }} variant="contained" color="error" onClick={() => navigate("/dashboard")}>Back</Button>
-            </Box>
             {
-                metricData?.map((res, id) => {
+                metricData?.length > 0 ? metricData?.map((res, id) => {
                     return (
                         <>
                             <Card sx={{ p: 2, m: 1 }}>
@@ -72,13 +84,25 @@ const Metrics = () => {
                         </>
                     )
                 })
+                    : <>
+                        <Container>
+                            <StyledContent sx={{ textAlign: 'center', alignItems: 'center' }}>
+                                <Typography variant="h3" paragraph>
+                                    No Metrics Found
+                                </Typography>
+                            </StyledContent>
+                        </Container>
+                    </>
             }
-            <Box sx={{ display: "flex", justifyContent: "flex-end", m: 1 }}>
-                <Button sx={{ mr: 2 }} variant="contained" color="error" onClick={() => navigate("/dashboard")}>Cancel</Button>
-                <Button variant="contained" onClick={handleSubmit}>Submit</Button>
-            </Box>
+            {
+                metricData?.length > 0 &&
+                <Box sx={{ display: "flex", justifyContent: "flex-end", m: 1 }}>
+                    <Button sx={{ mr: 2 }} variant="contained" color="error" onClick={() => handleCancel()}>Cancel</Button>
+                    <Button variant="contained" onClick={handleSubmit}>Submit</Button>
+                </Box>
+            }
         </>
     )
 }
 
-export default Metrics;
+export default MetricsEdit;

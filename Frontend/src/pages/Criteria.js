@@ -23,7 +23,6 @@ export default function CriteriaPage() {
         <>
             {
                 criteriaData?.map((res, id) => {
-                    console.log('res: ', res);
                     return (
                         <>
                             {id + 1} - {res?.title} <br />

@@ -4,18 +4,26 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { Typography } from "@mui/material";
+import { useState } from "react";
+import { useEffect } from "react";
+import axiosInstance from "src/AxiosInstance";
 
 export default function Dashboard() {
 
-    const data = JSON.parse(atob(localStorage.getItem('naac_dbcy_user')))
-    var criData = data?.accesses
+    const [criteriaData, setCriteriaData] = useState();
+
+    useEffect(() => {
+        axiosInstance(`criteria/`, { method: "GET" })
+            .then(res => {
+                setCriteriaData(res?.data)
+            })
+    }, [])
 
     return (
         <>
             <Typography variant="h5" sx={{ pl: 2 }}>Criteria</Typography>
             {
-                criData?.map((res, id) => {
-                    console.log('res: ', res);
+                criteriaData?.map((res, id) => {
                     return (
                         <>
                             <List

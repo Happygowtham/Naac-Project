@@ -1,6 +1,7 @@
 from django.db import models
 from .keyidentifiers import KeyIdentifiers
 from .criteria import Criteria
+from .year import Year
 
 
 TYPE_CHOICES = (
@@ -11,6 +12,8 @@ TYPE_CHOICES = (
 
 class Metrics(models.Model):
     metric_id = models.AutoField(primary_key=True)
+    year = models.ForeignKey(
+        Year, on_delete=models.CASCADE, null=False, db_constraint=False)
     criteria = models.ForeignKey(
         Criteria, on_delete=models.CASCADE, null=False, db_constraint=False)
     key_identifier = models.ForeignKey(

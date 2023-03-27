@@ -8,7 +8,7 @@ import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import CriteriaPage from './pages/Criteria';
 import Dashboard from './pages/Dashboard';
-import Metrics from './pages/Metrics';
+import MetricsView from './pages/MetricsView';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -33,7 +33,7 @@ export default function Router() {
       <Route path='/login' element={<LoginPage />} />
       <Route path="/" element={<PrivateOutlet />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path='/metrics/:id' element={<Metrics />} />
+        <Route path='/metrics/:id' element={<MetricsView />} />
         <Route path='/criteria' element={<CriteriaPage />} />
         <Route path='/products' element={<ProductsPage />} />
         <Route path='/blog' element={<BlogPage />} />
