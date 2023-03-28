@@ -1,11 +1,11 @@
-import { Box, Button, Card, Container, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, Container, IconButton, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "src/AxiosInstance";
 import { styled } from '@mui/material/styles';
 import Upload from "./Upload";
-
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 const StyledContent = styled('div')(({ theme }) => ({
     margin: 'auto',
@@ -20,6 +20,7 @@ const MetricsEdit = ({ setViewMode, getData }) => {
 
     const { id } = useParams();
     const [metricData, setMetricData] = useState([]);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         axiosInstance(`/metrics/?criteria=${id}`, { method: "GET" })
@@ -28,6 +29,14 @@ const MetricsEdit = ({ setViewMode, getData }) => {
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const handleChange = (event, index) => {
         let newArr = [...metricData];
@@ -51,8 +60,34 @@ const MetricsEdit = ({ setViewMode, getData }) => {
         setViewMode("View")
     }
 
+    const handleFileChange = (e, id) => {
+        let postData = metricData[id]
+        let file = e.target.files?.[0]
+        console.log('file: ', file);
+        axiosInstance(`/evidence/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'accept': '*/*'
+            },
+            data: {
+                year: 1,
+                evidence_file: file,
+                criteria: postData?.criteria?.id,
+                evidence_number: 1,
+                description: "test",
+                status: "inprogress",
+                location: 1,
+                metrics: postData?.metric_id
+            }
+        }).then(res => {
+            alert("Success");
+        })
+    }
+
     return (
         <>
+            <Upload handleFileChange={handleFileChange} id={id} open={open} handleClose={handleClose} />
             {
                 metricData?.length > 0 ? metricData?.map((res, id) => {
                     return (
@@ -60,7 +95,9 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                             <Card sx={{ p: 2, m: 1 }}>
                                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                                     <Typography>{res?.number} - {res?.question}</Typography>
-                                    <Upload />
+                                    <IconButton onClick={handleClickOpen} color="primary" aria-label="upload picture" component="label">
+                                        <CloudUploadIcon />
+                                    </IconButton>
                                 </Box>
                                 {
                                     res?.type === "QLM" ?

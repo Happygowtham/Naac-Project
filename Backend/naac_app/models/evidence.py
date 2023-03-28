@@ -11,7 +11,6 @@ class Evidence(models.Model):
     status = models.CharField(max_length=25, null=False)
     evidence_file = models.FileField(upload_to=get_file_path)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    incharge = models.ManyToManyField(User)
 
     class Meta:
         db_table = "evidence"
