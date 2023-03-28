@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -115,7 +116,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+# Place static in the same location as webpack build files
+STATIC_URL = '/django_static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'django_static')
+STATICFILES_DIRS = []
+
+# If you want to serve user uploaded files add these settings
+MEDIA_URL = '/django_media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'django_media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
