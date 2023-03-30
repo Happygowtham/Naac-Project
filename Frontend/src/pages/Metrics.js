@@ -1,4 +1,4 @@
-import { Box, Button, Card, Container, IconButton, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, Card, Container, IconButton, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -21,16 +21,28 @@ const MetricsEdit = ({ setViewMode, getData }) => {
     const { id } = useParams();
     const [metricData, setMetricData] = useState([]);
     const [open, setOpen] = useState(false);
+    const [locationOptions, setLocationOptions] = useState([]);
+    const [yearOptions, setYearOptions] = useState([]);
+    const [enidenceData, setEvidenceData] = useState({});
 
     useEffect(() => {
         axiosInstance(`/metrics/?criteria=${id}`, { method: "GET" })
             .then(res => {
                 setMetricData(res?.data);
             })
+        axiosInstance(`/location`, { method: "GET" })
+            .then(res => {
+                setLocationOptions(res?.data);
+            })
+        axiosInstance(`/year`, { method: "GET" })
+            .then(res => {
+                setYearOptions(res?.data);
+            })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleClickOpen = () => {
+        setEvidenceData({});
         setOpen(true);
     };
 
@@ -46,6 +58,14 @@ const MetricsEdit = ({ setViewMode, getData }) => {
         setMetricData(newArr);
     }
 
+    const handleYearChange = (event, value, id) => {
+        let newArr = [...metricData];
+        let item = newArr[id];
+        item = { ...item, event: value };
+        newArr[id] = item;
+        setMetricData(newArr);
+    }
+
     const handleSubmit = () => {
         let newArr = []
         metricData?.forEach(res => newArr?.push({ ...res, criteria: typeof res?.criteria === "object" ? res?.criteria?.id : res?.criteria }))
@@ -57,13 +77,11 @@ const MetricsEdit = ({ setViewMode, getData }) => {
 
     const handleCancel = () => {
         getData();
-        setViewMode("View")
+        setViewMode("View");
     }
 
-    const handleFileChange = (e, id) => {
+    const handleEvidenceSubmit = (e, id) => {
         let postData = metricData[id]
-        let file = e.target.files?.[0]
-        console.log('file: ', file);
         axiosInstance(`/evidence/`, {
             method: "POST",
             headers: {
@@ -71,12 +89,12 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                 'accept': '*/*'
             },
             data: {
-                year: 1,
-                evidence_file: file,
+                year: enidenceData?.evidence?.id,
+                evidence_file: enidenceData?.evidence,
                 criteria: postData?.criteria?.id,
                 evidence_number: 1,
-                description: "test",
-                status: "inprogress",
+                description: enidenceData?.description,
+                status: enidenceData?.status,
                 location: 1,
                 metrics: postData?.metric_id
             }
@@ -85,9 +103,27 @@ const MetricsEdit = ({ setViewMode, getData }) => {
         })
     }
 
+    const handleEvidenceChange = (event, value) => {
+        if (event === "location") {
+            if (value) setEvidenceData({ ...enidenceData, [event]: value })
+            else setEvidenceData({ ...enidenceData, [event]: "" })
+        } else if (event.target.name === "evidence") {
+            setEvidenceData({ ...enidenceData, evidence: event.target.files?.[0] })
+        } else {
+            setEvidenceData({ ...enidenceData, [event.target.name]: event.target.value })
+        }
+    }
+
     return (
         <>
-            <Upload handleFileChange={handleFileChange} id={id} open={open} handleClose={handleClose} />
+            <Upload
+                handleEvidenceChange={handleEvidenceChange}
+                locationOptions={locationOptions}
+                id={id}
+                open={open}
+                handleClose={handleClose}
+                handleEvidenceSubmit={handleEvidenceSubmit}
+            />
             {
                 metricData?.length > 0 ? metricData?.map((res, id) => {
                     return (
@@ -95,9 +131,31 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                             <Card sx={{ p: 2, m: 1 }}>
                                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                                     <Typography>{res?.number} - {res?.question}</Typography>
-                                    <IconButton onClick={handleClickOpen} color="primary" aria-label="upload picture" component="label">
-                                        <CloudUploadIcon />
-                                    </IconButton>
+                                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                                        <Autocomplete
+                                            freeSolo={false}
+                                            id="free-solo-2-demo"
+                                            size="small"
+                                            disableClearable
+                                            fullWidth
+                                            sx={{ width: 200 }}
+                                            onChange={(event, value) => handleYearChange(event, value, id)}
+                                            options={yearOptions?.map((option) => option?.from_year + " - " + option?.to_year)}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Search Year"
+                                                    InputProps={{
+                                                        ...params.InputProps,
+                                                        type: 'search',
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                        <IconButton onClick={handleClickOpen} color="primary" aria-label="upload picture" component="label">
+                                            <CloudUploadIcon />
+                                        </IconButton>
+                                    </Box>
                                 </Box>
                                 {
                                     res?.type === "QLM" ?

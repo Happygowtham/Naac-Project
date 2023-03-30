@@ -4,10 +4,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Button, Grid, IconButton, TextField } from "@mui/material";
+import { Autocomplete, Button, Grid, IconButton, Select, TextField } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 
-const Upload = ({ handleFileChange, id, open, handleClose }) => {
+const Upload = ({ id, open, handleClose, locationOptions, handleEvidenceChange, handleEvidenceSubmit }) => {
 
     return (
         <>
@@ -15,8 +18,7 @@ const Upload = ({ handleFileChange, id, open, handleClose }) => {
                 open={open}
                 onClose={handleClose}
                 fullWidth={true}
-                maxWidth={"sm"}
-
+                maxWidth="sm"
             >
                 <DialogTitle
                 >Subscribe
@@ -35,8 +37,7 @@ const Upload = ({ handleFileChange, id, open, handleClose }) => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-
-                        <input id="evidence" type="file" style={{ display: "none" }} onChange={(e) => handleFileChange(e, id)} />
+                        <input name="evidence" id="evidence" type="file" style={{ display: "none" }} onChange={(e) => handleEvidenceChange(e, id)} />
                         <div className="upload_doc" onClick={() => document.getElementById("evidence").click()}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -61,12 +62,42 @@ const Upload = ({ handleFileChange, id, open, handleClose }) => {
                                 Upload file
                             </p>
                         </div>
-                        <Grid container>
-                            <Grid item xs={12} md={6}>
-                                location
+                        <Grid container mt={4}>
+                            <Grid item xs={12} md={6} paddingRight={1}>
+                                <Autocomplete
+                                    id="free-solo-2-demo"
+                                    size="small"
+                                    disableClearable
+                                    onChange={(event, value) => handleEvidenceChange("location", value)}
+                                    options={locationOptions?.map((option) => option?.title)}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Search Location"
+                                            InputProps={{
+                                                ...params.InputProps,
+                                                type: 'search',
+                                            }}
+                                        />
+                                    )}
+                                />
                             </Grid>
-                            <Grid item xs={12} md={6}>
-                                status
+                            <Grid item xs={12} md={6} paddingLeft={1}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="demo-simple-select-label" size="small">Status</InputLabel>
+                                    <Select
+                                        size="small"
+                                        name="status"
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        label="Status"
+                                        onChange={handleEvidenceChange}
+                                    >
+                                        <MenuItem value={"Yet to Start"}>Yet to Start</MenuItem>
+                                        <MenuItem value={"In-Progress"}>In-Progress</MenuItem>
+                                        <MenuItem value={"Completed"}>Completed</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Grid>
                         </Grid>
                         <TextField
@@ -76,11 +107,13 @@ const Upload = ({ handleFileChange, id, open, handleClose }) => {
                             rows={4}
                             fullWidth
                             label="Description"
+                            onChange={handleEvidenceChange}
                         />
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={(e) => handleEvidenceSubmit(e, id)}>Submit</Button>
                 </DialogActions>
             </Dialog>
         </>
