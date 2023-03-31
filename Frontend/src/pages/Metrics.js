@@ -23,7 +23,14 @@ const MetricsEdit = ({ setViewMode, getData }) => {
     const [open, setOpen] = useState(false);
     const [locationOptions, setLocationOptions] = useState([]);
     const [yearOptions, setYearOptions] = useState([]);
-    const [enidenceData, setEvidenceData] = useState({});
+    const [evidenceData, setEvidenceData] = useState({
+        location: "",
+        status: "In-Progress",
+        description: "",
+        evidence: "",
+    });
+    const [errors, setErrors] = useState([]);
+    const [evidenceErrors, setEvidenceErrors] = useState([]);
 
     useEffect(() => {
         axiosInstance(`/metrics/?criteria=${id}`, { method: "GET" })
@@ -36,18 +43,52 @@ const MetricsEdit = ({ setViewMode, getData }) => {
             })
         axiosInstance(`/year`, { method: "GET" })
             .then(res => {
-                setYearOptions(res?.data);
+                let value = []
+                res?.data?.forEach(item => value.push({ id: item?.id, name: item?.from_year + " - " + item?.to_year }))
+                setYearOptions(value);
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleClickOpen = () => {
-        setEvidenceData({});
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const validate = () => {
+        let ret_value = []
+        metricData?.forEach((store, index) => {
+            const error = {};
+            if (!store.year) error.year = "Year is required";
+            if (!store.answer) error.answer = "Answer is required";
+            const temp = errors;
+            temp[index] = error;
+            setErrors([...temp]);
+            ret_value.push(Object.values(error).every((e) => e === ""));
+        })
+        return ret_value
+    };
+
+    const evidenceValidate = (fieldValues) => {
+        let temp = { ...errors };
+        if ("location" in fieldValues) {
+            temp.location = fieldValues.location?.trim() === "" ? "Location is required" : "";
+        }
+        if ("status" in fieldValues) {
+            temp.status = fieldValues.status?.trim() === "" ? "Status is required" : "";
+        }
+        if ("description" in fieldValues) {
+            temp.description = fieldValues.description?.trim() === "" ? "Description is required" : "";
+        }
+
+        setEvidenceErrors({
+            ...temp,
+        });
+
+        return Object.values(temp).every((x) => x === "");
     };
 
     const handleChange = (event, index) => {
@@ -61,18 +102,20 @@ const MetricsEdit = ({ setViewMode, getData }) => {
     const handleYearChange = (event, value, id) => {
         let newArr = [...metricData];
         let item = newArr[id];
-        item = { ...item, event: value };
+        item = { ...item, year: { id: 1, name: value } };
         newArr[id] = item;
         setMetricData(newArr);
     }
 
     const handleSubmit = () => {
-        let newArr = []
-        metricData?.forEach(res => newArr?.push({ ...res, criteria: typeof res?.criteria === "object" ? res?.criteria?.id : res?.criteria }))
-        axiosInstance(`/metrics-bulk-create/`, { method: "PUT", data: newArr })
-            .then(res => {
-                alert("Success");
-            })
+        if (!validate().includes(false)) {
+            let newArr = []
+            metricData?.forEach(res => newArr?.push({ ...res, criteria: typeof res?.criteria === "object" ? res?.criteria?.id : res?.criteria }))
+            axiosInstance(`/metrics-bulk-create/`, { method: "PUT", data: newArr })
+                .then(res => {
+                    alert("Success");
+                })
+        }
     }
 
     const handleCancel = () => {
@@ -81,36 +124,38 @@ const MetricsEdit = ({ setViewMode, getData }) => {
     }
 
     const handleEvidenceSubmit = (e, id) => {
-        let postData = metricData[id]
-        axiosInstance(`/evidence/`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                'accept': '*/*'
-            },
-            data: {
-                year: enidenceData?.evidence?.id,
-                evidence_file: enidenceData?.evidence,
-                criteria: postData?.criteria?.id,
-                evidence_number: 1,
-                description: enidenceData?.description,
-                status: enidenceData?.status,
-                location: 1,
-                metrics: postData?.metric_id
-            }
-        }).then(res => {
-            alert("Success");
-        })
+        if (evidenceValidate(evidenceData)) {
+            let postData = metricData[id]
+            axiosInstance(`/evidence/`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'accept': '*/*'
+                },
+                data: {
+                    year: evidenceData?.year?.id,
+                    evidence_file: evidenceData?.evidence,
+                    criteria: postData?.criteria?.id,
+                    evidence_number: 1,
+                    description: evidenceData?.description,
+                    status: evidenceData?.status,
+                    location: 1,
+                    metrics: postData?.metric_id
+                }
+            }).then(res => {
+                alert("Success");
+            })
+        }
     }
 
     const handleEvidenceChange = (event, value) => {
         if (event === "location") {
-            if (value) setEvidenceData({ ...enidenceData, [event]: value })
-            else setEvidenceData({ ...enidenceData, [event]: "" })
+            if (value) setEvidenceData({ ...evidenceData, [event]: value })
+            else setEvidenceData({ ...evidenceData, [event]: "" })
         } else if (event.target.name === "evidence") {
-            setEvidenceData({ ...enidenceData, evidence: event.target.files?.[0] })
+            setEvidenceData({ ...evidenceData, evidence: event.target.files?.[0] })
         } else {
-            setEvidenceData({ ...enidenceData, [event.target.name]: event.target.value })
+            setEvidenceData({ ...evidenceData, [event.target.name]: event.target.value })
         }
     }
 
@@ -123,6 +168,8 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                 open={open}
                 handleClose={handleClose}
                 handleEvidenceSubmit={handleEvidenceSubmit}
+                evidenceErrors={evidenceErrors}
+                evidenceData={evidenceData}
             />
             {
                 metricData?.length > 0 ? metricData?.map((res, id) => {
@@ -132,15 +179,16 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                                     <Typography>{res?.number} - {res?.question}</Typography>
                                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                                        <Autocomplete
+                                        {/* <Autocomplete
                                             freeSolo={false}
                                             id="free-solo-2-demo"
                                             size="small"
                                             disableClearable
                                             fullWidth
+                                            value={res?.year}
                                             sx={{ width: 200 }}
-                                            onChange={(event, value) => handleYearChange(event, value, id)}
-                                            options={yearOptions?.map((option) => option?.from_year + " - " + option?.to_year)}
+                                            onChange={(event, value) => handleYearChange("year", value, id)}
+                                            options={yearOptions?.map((option) => option?.name)}
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
@@ -149,9 +197,14 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                                                         ...params.InputProps,
                                                         type: 'search',
                                                     }}
+                                                    {...(errors[id] &&
+                                                        errors[id].year && {
+                                                        error: true,
+                                                        helperText: errors[id].year,
+                                                    })}
                                                 />
                                             )}
-                                        />
+                                        /> */}
                                         <IconButton onClick={handleClickOpen} color="primary" aria-label="upload picture" component="label">
                                             <CloudUploadIcon />
                                         </IconButton>
@@ -167,6 +220,11 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                                             value={res?.answer}
                                             rows={4}
                                             sx={{ mt: 1 }}
+                                            {...(errors[id] &&
+                                                errors[id].answer && {
+                                                error: true,
+                                                helperText: errors[id].answer,
+                                            })}
                                         />
                                         :
                                         <TextField
@@ -176,6 +234,11 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                                             sx={{ mt: 1 }}
                                             type="number"
                                             value={res?.answer}
+                                            {...(errors[id] &&
+                                                errors[id].answer && {
+                                                error: true,
+                                                helperText: errors[id].answer,
+                                            })}
                                         />
                                 }
                             </Card>

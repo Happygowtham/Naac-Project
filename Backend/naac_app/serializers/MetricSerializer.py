@@ -10,4 +10,5 @@ class MetricSerializer(FlexFieldsModelSerializer):
     def to_representation(self, data):
         ret = super().to_representation(data)
         ret['criteria'] = {"id":data.criteria.criteria_id, "name": data.criteria.title}
+        ret['year'] = {"id":data.year.id, "name": str(data.year.from_year)+' - '+str(data.year.to_year)}
         return ret

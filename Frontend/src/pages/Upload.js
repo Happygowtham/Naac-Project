@@ -10,7 +10,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 
-const Upload = ({ id, open, handleClose, locationOptions, handleEvidenceChange, handleEvidenceSubmit }) => {
+const Upload = ({ evidenceData, evidenceErrors, id, open, handleClose, locationOptions, handleEvidenceChange, handleEvidenceSubmit }) => {
 
     return (
         <>
@@ -78,6 +78,10 @@ const Upload = ({ id, open, handleClose, locationOptions, handleEvidenceChange, 
                                                 ...params.InputProps,
                                                 type: 'search',
                                             }}
+                                            {...(evidenceErrors.location && {
+                                                error: true,
+                                                helperText: evidenceErrors.location,
+                                            })}
                                         />
                                     )}
                                 />
@@ -91,6 +95,7 @@ const Upload = ({ id, open, handleClose, locationOptions, handleEvidenceChange, 
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
                                         label="Status"
+                                        value={evidenceData?.status}
                                         onChange={handleEvidenceChange}
                                     >
                                         <MenuItem value={"Yet to Start"}>Yet to Start</MenuItem>
@@ -108,6 +113,10 @@ const Upload = ({ id, open, handleClose, locationOptions, handleEvidenceChange, 
                             fullWidth
                             label="Description"
                             onChange={handleEvidenceChange}
+                            {...(evidenceErrors.description && {
+                                error: true,
+                                helperText: evidenceErrors.description,
+                            })}
                         />
                     </DialogContentText>
                 </DialogContent>

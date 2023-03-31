@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
-import { Link, Stack, IconButton, InputAdornment, TextField, Box } from '@mui/material';
+import { Link, Stack, IconButton, InputAdornment, TextField, Box, Snackbar, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
@@ -28,36 +28,37 @@ export default function LoginForm() {
   }
 
   return (
-    <Box component="form">
-      <Stack spacing={3}>
-        <TextField name="username" label="User Name" onChange={(e) => setData({ ...data, username: e.target.value })} />
+    <>
+      <Box component="form">
+        <Stack spacing={3}>
+          <TextField name="username" label="User Name" onChange={(e) => setData({ ...data, username: e.target.value })} />
+          <TextField
+            name="password"
+            label="Password"
+            type={showPassword ? 'text' : 'password'}
+            onChange={(e) => setData({ ...data, password: e.target.value })}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                    <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Stack>
 
-        <TextField
-          name="password"
-          label="Password"
-          type={showPassword ? 'text' : 'password'}
-          onChange={(e) => setData({ ...data, password: e.target.value })}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Stack>
+        <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 2 }}>
+          <Link variant="subtitle2" underline="hover">
+            Forgot password?
+          </Link>
+        </Stack>
 
-      <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 2 }}>
-        <Link variant="subtitle2" underline="hover">
-          Forgot password?
-        </Link>
-      </Stack>
-
-      <LoadingButton type='submit' fullWidth size="large" variant="contained" onClick={handleSignin}>
-        Login
-      </LoadingButton>
-    </Box>
+        <LoadingButton type='submit' fullWidth size="large" variant="contained" onClick={handleSignin}>
+          Login
+        </LoadingButton>
+      </Box>
+    </>
   );
 }
