@@ -179,7 +179,7 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                                     <Typography>{res?.number} - {res?.question}</Typography>
                                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                                        {/* <Autocomplete
+                                        <Autocomplete
                                             freeSolo={false}
                                             id="free-solo-2-demo"
                                             size="small"
@@ -204,7 +204,7 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                                                     })}
                                                 />
                                             )}
-                                        /> */}
+                                        />
                                         <IconButton onClick={handleClickOpen} color="primary" aria-label="upload picture" component="label">
                                             <CloudUploadIcon />
                                         </IconButton>
