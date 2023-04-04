@@ -5,6 +5,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "src/AxiosInstance";
 import { styled } from '@mui/material/styles';
 import MetricsEdit from "./Metrics";
+import Evidences from "./Evidences";
+import { groupBy } from "src/Functions/Functions";
 
 
 const StyledContent = styled('div')(({ theme }) => ({
@@ -36,7 +38,9 @@ const MetricsView = () => {
     const getData = () => {
         axiosInstance(`/metrics/?criteria=${id}`, { method: "GET" })
             .then(res => {
-                setMetricData(res?.data);
+                let dat = res?.data;
+                let eviData = groupBy(dat, "key_identifier");
+                setMetricData(eviData);
                 setLoading(false);
             }).catch(err => {
                 setLoading(false)
@@ -49,11 +53,10 @@ const MetricsView = () => {
         setViewMode("View")
     }
 
-
     return (
         <>
             <Box sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
-                <Typography variant="h5" sx={{ pl: 2 }}>{metricData?.[0]?.criteria?.id}. {metricData?.[0]?.criteria?.name}</Typography>
+                <Typography variant="h5">Criterion {Object.values(metricData)?.[0]?.[0]?.criteria?.number} - {Object.values(metricData)?.[0]?.[0]?.criteria?.name}</Typography>
                 <Box>
                     {canEdit ? viewMode === "View" ?
                         <Button size="small" sx={{ mr: 2 }} variant="contained" color="primary" onClick={() => setViewMode("Edit")}>Edit</Button>
@@ -65,14 +68,21 @@ const MetricsView = () => {
             </Box>
             {
                 viewMode === "View" ?
-                    metricData?.length > 0 ? metricData?.map((res, id) => {
+                    Object.values(metricData)?.length > 0 ? Object.values(metricData)?.map((res, id) => {
                         return (
                             <>
-                                <Card sx={{ p: 2, m: 1 }}>
-                                    <Typography sx={{ fontWeight: "600" }}>{res?.number} - {res?.question} </Typography>
-                                    <Typography sx={{ mt: 1 }}>&emsp;{res?.answer}</Typography>
-                                </Card>
-
+                                <Typography variant="h6" sx={{ pl: 3 }}>{res?.[0]?.key_identifiers?.number} - {res?.[0]?.key_identifiers?.name}</Typography>
+                                {res?.map((item) => {
+                                    return (
+                                        <>
+                                            <Card sx={{ p: 2, m: 1 }}>
+                                                <Typography sx={{ fontWeight: "600" }}>{item?.number} - {item?.question} </Typography>
+                                                <Typography sx={{ mt: 1 }}>&emsp; <b>Response:</b> {item?.answer}</Typography>
+                                                <Evidences metric_id={item?.metric_id} />
+                                            </Card>
+                                        </>
+                                    )
+                                })}
                             </>
                         )
                     })

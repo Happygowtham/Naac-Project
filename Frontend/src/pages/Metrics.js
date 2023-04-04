@@ -99,7 +99,7 @@ const MetricsEdit = ({ setViewMode, getData }) => {
         setMetricData(newArr);
     }
 
-    const handleYearChange = (event, value, id) => {
+    const handleYearChange = (event, value, id,) => {
         let newArr = [...metricData];
         let item = newArr[id];
         item = { ...item, year: { id: 1, name: value } };
@@ -110,7 +110,11 @@ const MetricsEdit = ({ setViewMode, getData }) => {
     const handleSubmit = () => {
         if (!validate().includes(false)) {
             let newArr = []
-            metricData?.forEach(res => newArr?.push({ ...res, criteria: typeof res?.criteria === "object" ? res?.criteria?.id : res?.criteria }))
+            metricData?.forEach(res => newArr?.push({
+                ...res,
+                criteria: typeof res?.criteria === "object" ? res?.criteria?.id : res?.criteria,
+                year: res?.year?.id
+            }))
             axiosInstance(`/metrics-bulk-create/`, { method: "PUT", data: newArr })
                 .then(res => {
                     alert("Success");
@@ -179,32 +183,34 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                                     <Typography>{res?.number} - {res?.question}</Typography>
                                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                                        <Autocomplete
-                                            freeSolo={false}
-                                            id="free-solo-2-demo"
-                                            size="small"
-                                            disableClearable
-                                            fullWidth
-                                            value={res?.year}
-                                            sx={{ width: 200 }}
-                                            onChange={(event, value) => handleYearChange("year", value, id)}
-                                            options={yearOptions?.map((option) => option?.name)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    label="Search Year"
-                                                    InputProps={{
-                                                        ...params.InputProps,
-                                                        type: 'search',
-                                                    }}
-                                                    {...(errors[id] &&
-                                                        errors[id].year && {
-                                                        error: true,
-                                                        helperText: errors[id].year,
-                                                    })}
-                                                />
-                                            )}
-                                        />
+                                        {res?.type === "QNM" &&
+                                            <Autocomplete
+                                                freeSolo={false}
+                                                id="free-solo-2-demo"
+                                                size="small"
+                                                disableClearable
+                                                fullWidth
+                                                value={res?.year?.name}
+                                                sx={{ width: 200 }}
+                                                onChange={(event, value) => handleYearChange("year", value, id)}
+                                                options={yearOptions?.map((option) => option?.name)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Search Year"
+                                                        InputProps={{
+                                                            ...params.InputProps,
+                                                            type: 'search',
+                                                        }}
+                                                        {...(errors[id] &&
+                                                            errors[id].year && {
+                                                            error: true,
+                                                            helperText: errors[id].year,
+                                                        })}
+                                                    />
+                                                )}
+                                            />
+                                        }
                                         <IconButton onClick={handleClickOpen} color="primary" aria-label="upload picture" component="label">
                                             <CloudUploadIcon />
                                         </IconButton>
