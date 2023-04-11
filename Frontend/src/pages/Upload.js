@@ -10,7 +10,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 
-const Upload = ({ evidenceData, evidenceErrors, id, open, handleClose, locationOptions, handleEvidenceChange, handleEvidenceSubmit }) => {
+const Upload = ({ yearOptions, evidenceData, evidenceErrors, id, open, handleClose, locationOptions, handleEvidenceChange, handleEvidenceSubmit }) => {
 
     return (
         <>
@@ -63,7 +63,32 @@ const Upload = ({ evidenceData, evidenceErrors, id, open, handleClose, locationO
                             </p>
                         </div>
                         <Grid container mt={4}>
-                            <Grid item xs={12} md={6} paddingRight={1}>
+                            <Grid item xs={12} md={6} padding={1}>
+                                <Autocomplete
+                                    freeSolo={false}
+                                    id="free-solo-2-demo"
+                                    size="small"
+                                    disableClearable
+                                    fullWidth
+                                    onChange={(event, value) => handleEvidenceChange("year", value, id)}
+                                    options={yearOptions?.map((option) => option?.name)}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Search Year"
+                                            InputProps={{
+                                                ...params.InputProps,
+                                                type: 'search',
+                                            }}
+                                            {...(evidenceErrors.year && {
+                                                error: true,
+                                                helperText: evidenceErrors.year,
+                                            })}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6} padding={1}>
                                 <Autocomplete
                                     id="free-solo-2-demo"
                                     size="small"
@@ -86,7 +111,7 @@ const Upload = ({ evidenceData, evidenceErrors, id, open, handleClose, locationO
                                     )}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6} paddingLeft={1}>
+                            <Grid item xs={12} md={6} padding={1}>
                                 <FormControl fullWidth>
                                     <InputLabel id="demo-simple-select-label" size="small">Status</InputLabel>
                                     <Select

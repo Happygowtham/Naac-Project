@@ -29,6 +29,7 @@ const MetricsEdit = ({ setViewMode, getData }) => {
         status: "In-Progress",
         description: "",
         evidence: "",
+        year: ""
     });
     const [errors, setErrors] = useState([]);
     const [evidenceErrors, setEvidenceErrors] = useState([]);
@@ -82,6 +83,9 @@ const MetricsEdit = ({ setViewMode, getData }) => {
         }
         if ("status" in fieldValues) {
             temp.status = fieldValues.status?.trim() === "" ? "Status is required" : "";
+        }
+        if ("year" in fieldValues) {
+            temp.year = fieldValues.year?.trim() === "" ? "Year is required" : "";
         }
         if ("description" in fieldValues) {
             temp.description = fieldValues.description?.trim() === "" ? "Description is required" : "";
@@ -163,6 +167,9 @@ const MetricsEdit = ({ setViewMode, getData }) => {
         if (event === "location") {
             if (value) setEvidenceData({ ...evidenceData, [event]: value })
             else setEvidenceData({ ...evidenceData, [event]: "" })
+        } else if (event === "year") {
+            if (value) setEvidenceData({ ...evidenceData, [event]: value })
+            else setEvidenceData({ ...evidenceData, [event]: "" })
         } else if (event.target.name === "evidence") {
             setEvidenceData({ ...evidenceData, evidence: event.target.files?.[0] })
         } else {
@@ -181,6 +188,7 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                 handleEvidenceSubmit={handleEvidenceSubmit}
                 evidenceErrors={evidenceErrors}
                 evidenceData={evidenceData}
+                yearOptions={yearOptions}
             />
             {
                 Object.values(metricData)?.length > 0 ? Object.values(metricData)?.map((res, id) => {
@@ -189,6 +197,7 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                             <Typography variant="h6" sx={{ pl: 3 }}>{res?.[0]?.key_identifiers?.number} - {res?.[0]?.key_identifiers?.name}</Typography>
                             {
                                 res?.map((item, iid) => {
+                                    console.log('iid: ', iid + id);
                                     return (
                                         <>
                                             <Card sx={{ p: 2, m: 1 }}>
@@ -238,10 +247,10 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                                                             value={item?.answer}
                                                             rows={4}
                                                             sx={{ mt: 1 }}
-                                                            {...(errors[id] &&
-                                                                errors[id].answer && {
+                                                            {...(errors[iid + id] &&
+                                                                errors[iid + id].answer && {
                                                                 error: true,
-                                                                helperText: errors[id].answer,
+                                                                helperText: errors[iid + id].answer,
                                                             })}
                                                         />
                                                         :
@@ -252,10 +261,10 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                                                             sx={{ mt: 1 }}
                                                             type="number"
                                                             value={item?.answer}
-                                                            {...(errors[id] &&
-                                                                errors[id].answer && {
+                                                            {...(errors[iid + id] &&
+                                                                errors[iid + id].answer && {
                                                                 error: true,
-                                                                helperText: errors[id].answer,
+                                                                helperText: errors[iid + id].answer,
                                                             })}
                                                         />
                                                 }
