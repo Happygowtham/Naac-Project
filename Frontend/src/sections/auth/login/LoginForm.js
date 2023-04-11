@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
-import { Link, Stack, IconButton, InputAdornment, TextField, Box, Snackbar, Alert } from '@mui/material';
+import { Link, Stack, IconButton, InputAdornment, TextField, Box } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
@@ -23,6 +23,8 @@ export default function LoginForm() {
           axiosInstance.defaults.headers['Authorization'] = "JWT " + res.data.access;
           localStorage.setItem("naac_dbcy_user", btoa(JSON.stringify(res?.data)));
           navigate("/dashboard");
+        }).catch(err => {
+          console.log('err: ', err);
         })
     }
   }

@@ -6,6 +6,7 @@ import axiosInstance from "src/AxiosInstance";
 import { styled } from '@mui/material/styles';
 import Upload from "./Upload";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { groupBy } from "src/Functions/Functions";
 
 const StyledContent = styled('div')(({ theme }) => ({
     margin: 'auto',
@@ -35,7 +36,9 @@ const MetricsEdit = ({ setViewMode, getData }) => {
     useEffect(() => {
         axiosInstance(`/metrics/?criteria=${id}`, { method: "GET" })
             .then(res => {
-                setMetricData(res?.data);
+                let dat = res?.data;
+                let eviData = groupBy(dat, "key_identifier");
+                setMetricData(eviData);
             })
         axiosInstance(`/location`, { method: "GET" })
             .then(res => {
@@ -60,7 +63,7 @@ const MetricsEdit = ({ setViewMode, getData }) => {
 
     const validate = () => {
         let ret_value = []
-        metricData?.forEach((store, index) => {
+        Object.values(metricData).flat(1)?.forEach((store, index) => {
             const error = {};
             if (!store.year) error.year = "Year is required";
             if (!store.answer) error.answer = "Answer is required";
@@ -91,26 +94,30 @@ const MetricsEdit = ({ setViewMode, getData }) => {
         return Object.values(temp).every((x) => x === "");
     };
 
-    const handleChange = (event, index) => {
-        let newArr = [...metricData];
+    const handleChange = (event, id) => {
+        let newArr = [...Object.values(metricData).flat(1)];
+        let index = [...Object.values(metricData).flat(1)].findIndex(res => res?.metric_id === id)
         let item = newArr[index];
         item = { ...item, answer: event.target.value, criteria: typeof item?.criteria === "object" ? item?.criteria?.id : item?.criteria };
         newArr[index] = item;
-        setMetricData(newArr);
+        let fiValue = groupBy(newArr, "key_identifier");
+        setMetricData(fiValue);
     }
 
-    const handleYearChange = (event, value, id,) => {
-        let newArr = [...metricData];
-        let item = newArr[id];
+    const handleYearChange = (event, value, id) => {
+        let newArr = [...Object.values(metricData).flat(1)];
+        let index = [...Object.values(metricData).flat(1)].findIndex(res => res?.metric_id === id)
+        let item = newArr[index];
         item = { ...item, year: { id: 1, name: value } };
-        newArr[id] = item;
-        setMetricData(newArr);
+        newArr[index] = item;
+        let fiValue = groupBy(newArr, "key_identifier");
+        setMetricData(fiValue);
     }
 
     const handleSubmit = () => {
         if (!validate().includes(false)) {
             let newArr = []
-            metricData?.forEach(res => newArr?.push({
+            Object.values(metricData).flat(1)?.forEach(res => newArr?.push({
                 ...res,
                 criteria: typeof res?.criteria === "object" ? res?.criteria?.id : res?.criteria,
                 year: res?.year?.id
@@ -176,79 +183,87 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                 evidenceData={evidenceData}
             />
             {
-                metricData?.length > 0 ? metricData?.map((res, id) => {
+                Object.values(metricData)?.length > 0 ? Object.values(metricData)?.map((res, id) => {
                     return (
                         <>
-                            <Card sx={{ p: 2, m: 1 }}>
-                                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                                    <Typography>{res?.number} - {res?.question}</Typography>
-                                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                                        {res?.type === "QNM" &&
-                                            <Autocomplete
-                                                freeSolo={false}
-                                                id="free-solo-2-demo"
-                                                size="small"
-                                                disableClearable
-                                                fullWidth
-                                                value={res?.year?.name}
-                                                sx={{ width: 200 }}
-                                                onChange={(event, value) => handleYearChange("year", value, id)}
-                                                options={yearOptions?.map((option) => option?.name)}
-                                                renderInput={(params) => (
-                                                    <TextField
-                                                        {...params}
-                                                        label="Search Year"
-                                                        InputProps={{
-                                                            ...params.InputProps,
-                                                            type: 'search',
-                                                        }}
-                                                        {...(errors[id] &&
-                                                            errors[id].year && {
-                                                            error: true,
-                                                            helperText: errors[id].year,
-                                                        })}
-                                                    />
-                                                )}
-                                            />
-                                        }
-                                        <IconButton onClick={handleClickOpen} color="primary" aria-label="upload picture" component="label">
-                                            <CloudUploadIcon />
-                                        </IconButton>
-                                    </Box>
-                                </Box>
-                                {
-                                    res?.type === "QLM" ?
-                                        <TextField
-                                            name={res?.metric_id}
-                                            onChange={(e) => handleChange(e, id)}
-                                            multiline
-                                            fullWidth
-                                            value={res?.answer}
-                                            rows={4}
-                                            sx={{ mt: 1 }}
-                                            {...(errors[id] &&
-                                                errors[id].answer && {
-                                                error: true,
-                                                helperText: errors[id].answer,
-                                            })}
-                                        />
-                                        :
-                                        <TextField
-                                            name={res?.metric_id}
-                                            onChange={(e) => handleChange(e, id)}
-                                            size="small"
-                                            sx={{ mt: 1 }}
-                                            type="number"
-                                            value={res?.answer}
-                                            {...(errors[id] &&
-                                                errors[id].answer && {
-                                                error: true,
-                                                helperText: errors[id].answer,
-                                            })}
-                                        />
-                                }
-                            </Card>
-
+                            <Typography variant="h6" sx={{ pl: 3 }}>{res?.[0]?.key_identifiers?.number} - {res?.[0]?.key_identifiers?.name}</Typography>
+                            {
+                                res?.map((item, iid) => {
+                                    return (
+                                        <>
+                                            <Card sx={{ p: 2, m: 1 }}>
+                                                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                                                    <Typography>{item?.number} - {item?.question}</Typography>
+                                                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                                                        {item?.type === "QNM" &&
+                                                            <Autocomplete
+                                                                freeSolo={false}
+                                                                id="free-solo-2-demo"
+                                                                size="small"
+                                                                disableClearable
+                                                                fullWidth
+                                                                value={item?.year?.name}
+                                                                sx={{ width: 200 }}
+                                                                onChange={(event, value) => handleYearChange("year", value, id)}
+                                                                options={yearOptions?.map((option) => option?.name)}
+                                                                renderInput={(params) => (
+                                                                    <TextField
+                                                                        {...params}
+                                                                        label="Search Year"
+                                                                        InputProps={{
+                                                                            ...params.InputProps,
+                                                                            type: 'search',
+                                                                        }}
+                                                                        {...(errors[id] &&
+                                                                            errors[id].year && {
+                                                                            error: true,
+                                                                            helperText: errors[id].year,
+                                                                        })}
+                                                                    />
+                                                                )}
+                                                            />
+                                                        }
+                                                        <IconButton onClick={handleClickOpen} color="primary" aria-label="upload picture" component="label">
+                                                            <CloudUploadIcon />
+                                                        </IconButton>
+                                                    </Box>
+                                                </Box>
+                                                {
+                                                    item?.type === "QLM" ?
+                                                        <TextField
+                                                            name={item?.metric_id}
+                                                            onChange={(e) => handleChange(e, item?.metric_id)}
+                                                            multiline
+                                                            fullWidth
+                                                            value={item?.answer}
+                                                            rows={4}
+                                                            sx={{ mt: 1 }}
+                                                            {...(errors[id] &&
+                                                                errors[id].answer && {
+                                                                error: true,
+                                                                helperText: errors[id].answer,
+                                                            })}
+                                                        />
+                                                        :
+                                                        <TextField
+                                                            name={item?.metric_id}
+                                                            onChange={(e) => handleChange(e, item?.metric_id)}
+                                                            size="small"
+                                                            sx={{ mt: 1 }}
+                                                            type="number"
+                                                            value={item?.answer}
+                                                            {...(errors[id] &&
+                                                                errors[id].answer && {
+                                                                error: true,
+                                                                helperText: errors[id].answer,
+                                                            })}
+                                                        />
+                                                }
+                                            </Card>
+                                        </>
+                                    )
+                                })
+                            }
                         </>
                     )
                 })
@@ -263,7 +278,7 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                     </>
             }
             {
-                metricData?.length > 0 &&
+                Object.values(metricData)?.length > 0 &&
                 <Box sx={{ display: "flex", justifyContent: "flex-end", m: 1 }}>
                     <Button size="small" sx={{ mr: 2 }} variant="contained" color="error" onClick={() => handleCancel()}>Cancel</Button>
                     <Button size="small" variant="contained" onClick={handleSubmit}>Submit</Button>

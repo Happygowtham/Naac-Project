@@ -45,7 +45,6 @@ const MetricsView = () => {
             }).catch(err => {
                 setLoading(false)
             })
-
     }
 
     const handleView = () => {
