@@ -9,6 +9,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         user = User.objects.values().filter(id=self.user.id)[0]
         data['user'] = user
         data['accesses'] = User.objects.get(id=user['id']).access.values()
+        data['accesse_years'] = User.objects.get(id=user['id']).access_year.values()
         return data
 
     # @classmethod
