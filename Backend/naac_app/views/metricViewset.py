@@ -10,7 +10,7 @@ class MetricViewSet(viewsets.ModelViewSet):
     
     queryset = Metrics.objects.all()
     serializer_class = MetricSerializer
-    filterset_fields = ['criteria']
+    filterset_fields = ['criteria', 'year']
 
 
 class MetricBulkCreate(APIView):

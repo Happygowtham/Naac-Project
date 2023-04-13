@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from .criteria import Criteria
+from .year import Year
 
 
 class UserManager(BaseUserManager):
@@ -44,7 +45,7 @@ class User(AbstractUser):
     pimg = models.TextField(null=True)
     faculty_code = models.CharField(null=True, max_length=5)
     access = models.ManyToManyField(Criteria, related_name="user_access")
-    access_year = models.ForeignKey('naac_app.Year', on_delete=models.CASCADE, null=True)
+    access_year = models.ManyToManyField(Year, related_name="access_year")
 
     objects = UserManager()
 

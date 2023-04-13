@@ -24,6 +24,7 @@ class Metrics(models.Model):
     score = models.IntegerField(null=True)
     question = models.CharField(max_length=254, null=True, blank=True)
     answer = models.TextField(null=True, blank=True)
+    is_multi_year = models.BooleanField(default=False)
 
 
     class Meta:

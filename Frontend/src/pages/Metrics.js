@@ -1,7 +1,6 @@
-import { Autocomplete, Box, Button, Card, Container, IconButton, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, Container, IconButton, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import axiosInstance from "src/AxiosInstance";
 import { styled } from '@mui/material/styles';
 import Upload from "./Upload";
@@ -17,49 +16,43 @@ const StyledContent = styled('div')(({ theme }) => ({
 }));
 
 
-const MetricsEdit = ({ setViewMode, getData }) => {
+const MetricsEdit = ({ setViewMode, getData, year, metricData, setMetricData }) => {
 
-    const { id } = useParams();
-    const [metricData, setMetricData] = useState([]);
     const [open, setOpen] = useState(false);
     const [locationOptions, setLocationOptions] = useState([]);
-    const [yearOptions, setYearOptions] = useState([]);
     const [evidenceData, setEvidenceData] = useState({
         location: "",
         status: "In-Progress",
         description: "",
         evidence: "",
-        year: ""
+        metric_id: ""
     });
     const [errors, setErrors] = useState([]);
     const [evidenceErrors, setEvidenceErrors] = useState([]);
 
     useEffect(() => {
-        axiosInstance(`/metrics/?criteria=${id}`, { method: "GET" })
-            .then(res => {
-                let dat = res?.data;
-                let eviData = groupBy(dat, "key_identifier");
-                setMetricData(eviData);
-            })
         axiosInstance(`/location`, { method: "GET" })
             .then(res => {
                 setLocationOptions(res?.data);
             })
-        axiosInstance(`/year`, { method: "GET" })
-            .then(res => {
-                let value = []
-                res?.data?.forEach(item => value.push({ id: item?.id, name: item?.from_year + " - " + item?.to_year }))
-                setYearOptions(value);
-            })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const handleClickOpen = () => {
+    const handleClickOpen = (id) => {
         setOpen(true);
+        setEvidenceData({ ...evidenceData, metric_id: id })
     };
 
     const handleClose = () => {
         setOpen(false);
+        setEvidenceData({
+            location: "",
+            status: "In-Progress",
+            description: "",
+            evidence: "",
+            year: ""
+        })
+        setEvidenceErrors([])
     };
 
     const validate = () => {
@@ -69,7 +62,7 @@ const MetricsEdit = ({ setViewMode, getData }) => {
             if (!store.year) error.year = "Year is required";
             if (!store.answer) error.answer = "Answer is required";
             const temp = errors;
-            temp[index] = error;
+            temp[store?.metric_id] = error;
             setErrors([...temp]);
             ret_value.push(Object.values(error).every((e) => e === ""));
         })
@@ -77,18 +70,18 @@ const MetricsEdit = ({ setViewMode, getData }) => {
     };
 
     const evidenceValidate = (fieldValues) => {
-        let temp = { ...errors };
+        let temp = { ...evidenceErrors };
         if ("location" in fieldValues) {
-            temp.location = fieldValues.location?.trim() === "" ? "Location is required" : "";
+            temp.location = fieldValues.location === "" ? "Location is required" : "";
         }
         if ("status" in fieldValues) {
-            temp.status = fieldValues.status?.trim() === "" ? "Status is required" : "";
-        }
-        if ("year" in fieldValues) {
-            temp.year = fieldValues.year?.trim() === "" ? "Year is required" : "";
+            temp.status = fieldValues.status === "" ? "Status is required" : "";
         }
         if ("description" in fieldValues) {
             temp.description = fieldValues.description?.trim() === "" ? "Description is required" : "";
+        }
+        if ("evidence" in fieldValues) {
+            temp.evidence = fieldValues.evidence === "" ? "Evidence is required" : "";
         }
 
         setEvidenceErrors({
@@ -108,23 +101,13 @@ const MetricsEdit = ({ setViewMode, getData }) => {
         setMetricData(fiValue);
     }
 
-    const handleYearChange = (event, value, id) => {
-        let newArr = [...Object.values(metricData).flat(1)];
-        let index = [...Object.values(metricData).flat(1)].findIndex(res => res?.metric_id === id)
-        let item = newArr[index];
-        item = { ...item, year: { id: 1, name: value } };
-        newArr[index] = item;
-        let fiValue = groupBy(newArr, "key_identifier");
-        setMetricData(fiValue);
-    }
-
     const handleSubmit = () => {
         if (!validate().includes(false)) {
             let newArr = []
             Object.values(metricData).flat(1)?.forEach(res => newArr?.push({
                 ...res,
                 criteria: typeof res?.criteria === "object" ? res?.criteria?.id : res?.criteria,
-                year: res?.year?.id
+                year: year?.year
             }))
             axiosInstance(`/metrics-bulk-create/`, { method: "PUT", data: newArr })
                 .then(res => {
@@ -138,9 +121,9 @@ const MetricsEdit = ({ setViewMode, getData }) => {
         setViewMode("View");
     }
 
-    const handleEvidenceSubmit = (e, id) => {
+    const handleEvidenceSubmit = (e) => {
         if (evidenceValidate(evidenceData)) {
-            let postData = metricData[id]
+            let postData = Object.values(metricData).flat(1)?.filter(res => +res?.metric_id === +evidenceData?.metric_id)
             axiosInstance(`/evidence/`, {
                 method: "POST",
                 headers: {
@@ -148,29 +131,32 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                     'accept': '*/*'
                 },
                 data: {
-                    year: evidenceData?.year?.id,
+                    year: year?.year,
                     evidence_file: evidenceData?.evidence,
-                    criteria: postData?.criteria?.id,
+                    criteria: typeof postData?.[0]?.criteria === "object" ? postData?.[0]?.criteria?.id : postData?.[0]?.criteria,
                     evidence_number: 1,
                     description: evidenceData?.description,
                     status: evidenceData?.status,
-                    location: 1,
-                    metrics: postData?.metric_id
+                    location: evidenceData?.location,
+                    metrics: evidenceData?.metric_id
                 }
             }).then(res => {
                 alert("Success");
+                handleClose();
             })
         }
     }
 
     const handleEvidenceChange = (event, value) => {
         if (event === "location") {
-            if (value) setEvidenceData({ ...evidenceData, [event]: value })
+            if (value) setEvidenceData({ ...evidenceData, [event]: value?.id })
             else setEvidenceData({ ...evidenceData, [event]: "" })
         } else if (event === "year") {
             if (value) setEvidenceData({ ...evidenceData, [event]: value })
             else setEvidenceData({ ...evidenceData, [event]: "" })
-        } else if (event.target.name === "evidence") {
+        } else if (event === "remove_file") {
+            setEvidenceData({ ...evidenceData, evidence: "" })
+        } else if (event?.target?.name === "evidence") {
             setEvidenceData({ ...evidenceData, evidence: event.target.files?.[0] })
         } else {
             setEvidenceData({ ...evidenceData, [event.target.name]: event.target.value })
@@ -182,13 +168,11 @@ const MetricsEdit = ({ setViewMode, getData }) => {
             <Upload
                 handleEvidenceChange={handleEvidenceChange}
                 locationOptions={locationOptions}
-                id={id}
                 open={open}
                 handleClose={handleClose}
                 handleEvidenceSubmit={handleEvidenceSubmit}
                 evidenceErrors={evidenceErrors}
                 evidenceData={evidenceData}
-                yearOptions={yearOptions}
             />
             {
                 Object.values(metricData)?.length > 0 ? Object.values(metricData)?.map((res, id) => {
@@ -196,43 +180,14 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                         <>
                             <Typography variant="h6" sx={{ pl: 3 }}>{res?.[0]?.key_identifiers?.number} - {res?.[0]?.key_identifiers?.name}</Typography>
                             {
-                                res?.map((item, iid) => {
-                                    console.log('iid: ', iid + id);
+                                res?.map((item) => {
                                     return (
                                         <>
                                             <Card sx={{ p: 2, m: 1 }}>
                                                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                                                     <Typography>{item?.number} - {item?.question}</Typography>
                                                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                                                        {item?.type === "QNM" &&
-                                                            <Autocomplete
-                                                                freeSolo={false}
-                                                                id="free-solo-2-demo"
-                                                                size="small"
-                                                                disableClearable
-                                                                fullWidth
-                                                                value={item?.year?.name}
-                                                                sx={{ width: 200 }}
-                                                                onChange={(event, value) => handleYearChange("year", value, id)}
-                                                                options={yearOptions?.map((option) => option?.name)}
-                                                                renderInput={(params) => (
-                                                                    <TextField
-                                                                        {...params}
-                                                                        label="Search Year"
-                                                                        InputProps={{
-                                                                            ...params.InputProps,
-                                                                            type: 'search',
-                                                                        }}
-                                                                        {...(errors[id] &&
-                                                                            errors[id].year && {
-                                                                            error: true,
-                                                                            helperText: errors[id].year,
-                                                                        })}
-                                                                    />
-                                                                )}
-                                                            />
-                                                        }
-                                                        <IconButton onClick={handleClickOpen} color="primary" aria-label="upload picture" component="label">
+                                                        <IconButton onClick={() => handleClickOpen(item?.metric_id)} color="primary" aria-label="upload picture" component="label">
                                                             <CloudUploadIcon />
                                                         </IconButton>
                                                     </Box>
@@ -247,10 +202,10 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                                                             value={item?.answer}
                                                             rows={4}
                                                             sx={{ mt: 1 }}
-                                                            {...(errors[iid + id] &&
-                                                                errors[iid + id].answer && {
+                                                            {...(errors[item?.metric_id] &&
+                                                                errors[item?.metric_id].answer && {
                                                                 error: true,
-                                                                helperText: errors[iid + id].answer,
+                                                                helperText: errors[item?.metric_id].answer,
                                                             })}
                                                         />
                                                         :
@@ -261,10 +216,10 @@ const MetricsEdit = ({ setViewMode, getData }) => {
                                                             sx={{ mt: 1 }}
                                                             type="number"
                                                             value={item?.answer}
-                                                            {...(errors[iid + id] &&
-                                                                errors[iid + id].answer && {
+                                                            {...(errors[item?.metric_id] &&
+                                                                errors[item?.metric_id].answer && {
                                                                 error: true,
-                                                                helperText: errors[iid + id].answer,
+                                                                helperText: errors[item?.metric_id].answer,
                                                             })}
                                                         />
                                                 }

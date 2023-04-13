@@ -6,3 +6,4 @@ class YearSerializer(FlexFieldsModelSerializer):
     class Meta:
         model = Year
         fields = '__all__'
+    
