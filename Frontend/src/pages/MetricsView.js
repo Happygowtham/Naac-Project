@@ -110,7 +110,7 @@ const MetricsView = () => {
                                             <Card sx={{ p: 2, m: 1 }}>
                                                 <Typography sx={{ fontWeight: "600" }}>{item?.number} - {item?.question} </Typography>
                                                 <Typography sx={{ mt: 1 }}>&emsp; <b>Response:</b> {item?.answer}</Typography>
-                                                <Evidences metric_id={item?.metric_id} />
+                                                <Evidences year={year} metric_id={item?.metric_id} />
                                             </Card>
                                         </>
                                     )

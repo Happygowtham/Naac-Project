@@ -3,17 +3,17 @@ import { useState } from "react";
 import { useEffect } from "react";
 import axiosInstance from "src/AxiosInstance";
 
-const Evidences = ({ metric_id }) => {
+const Evidences = ({ metric_id, year }) => {
 
     const [evidenceData, setEvidenceData] = useState([]);
 
     useEffect(() => {
-        axiosInstance(`evidence/?metrics=${metric_id}`, { method: "GET" })
+        axiosInstance(`evidence/?metrics=${metric_id}&year=${year?.year}`, { method: "GET" })
             .then(res => {
                 setEvidenceData(res?.data);
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [year])
 
     return (
         <>
