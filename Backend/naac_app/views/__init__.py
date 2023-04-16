@@ -5,3 +5,4 @@ from .locationViewset import LocationViewSet
 from .evidenceViewset import EvidenceViewSet
 from .userViewset import UserViewSet
 from .yearViewset import YearViewSet
+from . import progress
