@@ -15,11 +15,16 @@ import Tooltip from '@mui/material/Tooltip';
 export default function Dashboard() {
 
     const [criteriaData, setCriteriaData] = useState();
+    const [progressData, setProgressData] = useState({});
 
     useEffect(() => {
         axiosInstance(`criteria/`, { method: "GET" })
             .then(res => {
                 setCriteriaData(res?.data)
+            })
+        axiosInstance(`progress/`, { method: "GET" })
+            .then(res => {
+                setProgressData(res?.data)
             })
     }, [])
 
@@ -49,11 +54,11 @@ export default function Dashboard() {
                                     <Box sx={{ display: 'flex', alignItems: 'center', m: 2, mt: 3 }}>
                                         <Tooltip title="Progress">
                                             <Box sx={{ width: '100%', mr: 1 }}>
-                                                <LinearProgress variant="determinate" value={84} sx={{ height: 10, borderRadius: "10px" }} />
+                                                <LinearProgress variant="determinate" value={progressData?.criteria?.[res?.criteria_id]} sx={{ height: 10, borderRadius: "10px" }} />
                                             </Box>
                                         </Tooltip>
                                         <Box sx={{ minWidth: 35 }}>
-                                            <Typography variant='body2' color='text.secondary'>{Math.round(40)} %</Typography>
+                                            <Typography variant='body2' color='text.secondary'>{Math.round(progressData?.criteria?.[res?.criteria_id])} %</Typography>
                                         </Box>
                                     </Box>
                                 </Grid>

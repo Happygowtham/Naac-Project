@@ -70,7 +70,7 @@ const MetricsView = () => {
     return (
         <>
             <Box sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
-                <Typography variant="h5">Criterion {Object.values(metricData)?.[0]?.[0]?.criteria?.number} - {Object.values(metricData)?.[0]?.[0]?.criteria?.name}</Typography>
+                <Typography variant="h5">Criterio {Object.values(metricData)?.[0]?.[0]?.criteria?.number} - {Object.values(metricData)?.[0]?.[0]?.criteria?.name}</Typography>
                 <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                     <FormControl fullWidth sx={{ mr: 2 }}>
                         <InputLabel id="demo-simple-select-label" size="small">Select Year</InputLabel>

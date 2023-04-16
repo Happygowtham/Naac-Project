@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import MetricsView from './pages/MetricsView';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import KeyIdentifier from './pages/KeyIdentifier';
 
 
 function PrivateOutlet() {
@@ -33,13 +34,13 @@ export default function Router() {
       <Route path='/login' element={<LoginPage />} />
       <Route path="/" element={<PrivateOutlet />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/key-identifier" element={<KeyIdentifier />} />
         <Route path='/metrics/:id' element={<MetricsView />} />
         <Route path='/criteria' element={<CriteriaPage />} />
         <Route path='/products' element={<ProductsPage />} />
         <Route path='/blog' element={<BlogPage />} />
       </Route>
     </Routes>
-
   )
 
 }
