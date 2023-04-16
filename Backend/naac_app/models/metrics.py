@@ -12,8 +12,7 @@ TYPE_CHOICES = (
 
 class Metrics(models.Model):
     metric_id = models.AutoField(primary_key=True)
-    year = models.ForeignKey(
-        Year, on_delete=models.CASCADE, null=False, db_constraint=False)
+    year = models.ManyToManyField(Year, related_name="year")
     criteria = models.ForeignKey(
         Criteria, on_delete=models.CASCADE, null=False, db_constraint=False)
     key_identifier = models.ForeignKey(
