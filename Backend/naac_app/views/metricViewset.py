@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 class MetricViewSet(viewsets.ModelViewSet):
     
-    queryset = Metrics.objects.all()
+    queryset = Metrics.objects.all().order_by('number')
     serializer_class = MetricSerializer
     filterset_fields = ['criteria', 'year']
 
