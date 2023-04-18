@@ -83,14 +83,17 @@ const MetricsEdit = ({ dat, setEditMetricData, editMetricData }) => {
     }
 
     const handleSubmit = () => {
-        axiosInstance(`/metrics/${data?.metric_id}/`, {
-            method: "PATCH", data: {
-                answer: metricAnswer,
-            }
-        })
-            .then(res => {
-                alert("Success");
-            })
+        if (data?.is_multi_year) {
+            axiosInstance(`/metrics/${data?.metric_id}/`, {
+                method: "PATCH", data: { answer: metricAnswer }
+            }).then(res => { alert("Success"); })
+        } else {
+            let url = "/metrics-answer/"
+            let method = "POST"
+            axiosInstance(url, {
+                method: method, data: { year: metricAnswer, metric_id: "" }
+            }).then(res => { alert("Success"); })
+        }
     }
 
 

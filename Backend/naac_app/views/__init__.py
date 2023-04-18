@@ -6,3 +6,4 @@ from .evidenceViewset import EvidenceViewSet
 from .userViewset import UserViewSet
 from .yearViewset import YearViewSet
 from . import progress
+from .metricAnswerViewset import MetricAnswerViewSet

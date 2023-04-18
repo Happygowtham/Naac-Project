@@ -5,3 +5,4 @@ from .locationSerializer import LocationSerializer
 from .evidenceSerializer import EvidenceSerializer
 from .userSerializer import UserSerializer
 from .yearSerializer import YearSerializer
+from .metricAnswerSerializer import MetricAnswerSerializer

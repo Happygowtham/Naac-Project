@@ -6,6 +6,7 @@ import axiosInstance from "src/AxiosInstance";
 import MetricsEdit from "./Metrics";
 import Evidences from "./Evidences";
 import { groupBy } from "src/Functions/Functions";
+import MultiYearData from "./MultiYearData";
 
 
 const MetricsView = () => {
@@ -102,7 +103,12 @@ const MetricsView = () => {
                                                 <>
                                                     <Card sx={{ p: 2, m: 1, cursor: canEdit && "pointer" }} onClick={() => canEdit && handleEditClick(item)}>
                                                         <Typography sx={{ fontWeight: "600" }}>{item?.number} - {item?.question} </Typography>
-                                                        <Typography sx={{ mt: 1 }}>&emsp; <b>Response:</b> {item?.answer}</Typography>
+                                                        {
+                                                            !item?.is_multi_year ?
+                                                                <Typography sx={{ mt: 1 }}>&emsp; <b>Response:</b> {item?.answer}</Typography>
+                                                                :
+                                                                <MultiYearData metric={item?.metric_id} />
+                                                        }
                                                         <Evidences year={year} metric_id={item?.metric_id} />
                                                     </Card>
                                                 </>
