@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
-from naac_app.views import KeyIdentifiersViewSet, CriteriaViewSet, MetricViewSet, LocationViewSet, EvidenceViewSet, UserViewSet,MetricBulkCreate, YearViewSet
+from naac_app.views import KeyIdentifiersViewSet, CriteriaViewSet, MetricViewSet, LocationViewSet, EvidenceViewSet, UserViewSet, YearViewSet
 from .views import progress
 
 router = routers.DefaultRouter()
@@ -17,7 +17,7 @@ router.register('year', YearViewSet, basename='year')
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
-    path('metrics-bulk-create/', MetricBulkCreate.as_view(), name='metric-bulk-create'),
+    # path('metrics-bulk-create/', MetricBulkCreate.as_view(), name='metric-bulk-create'),
     path('progress/', progress.progress_view, name='progress'),
     # path('metrics-bulk-update/', MetricBulkUpdate.as_view(), name='metric-bulk-update')
 ]
