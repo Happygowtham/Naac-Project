@@ -62,7 +62,7 @@ const MetricsView = () => {
             {
                 !loading ? editMetricData?.show ?
                     <MetricsEdit
-                        dat={editMetricData?.item}
+                        data={editMetricData?.item}
                         setEditMetricData={setEditMetricData}
                         editMetricData={editMetricData}
                     />

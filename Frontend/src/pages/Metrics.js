@@ -6,7 +6,7 @@ import Upload from "./Upload";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 
-const MetricsEdit = ({ dat, setEditMetricData, editMetricData }) => {
+const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
 
     const [open, setOpen] = useState(false);
     const [locationOptions, setLocationOptions] = useState([]);
@@ -20,7 +20,7 @@ const MetricsEdit = ({ dat, setEditMetricData, editMetricData }) => {
     const [evidenceErrors, setEvidenceErrors] = useState([]);
     const [yearOptions, setYearOptions] = useState([]);
     const [year, setYear] = useState({ year: "" });
-    const [data, setData] = useState(dat);
+    const [answerData, setAnswerData] = useState();
     const [metricAnswer, setMetricAnswer] = useState(data?.answer || "");
 
     useEffect(() => {
@@ -54,6 +54,7 @@ const MetricsEdit = ({ dat, setEditMetricData, editMetricData }) => {
             year: ""
         })
         setEvidenceErrors([])
+        setMetricAnswer("")
     };
 
     const evidenceValidate = (fieldValues) => {
@@ -83,15 +84,15 @@ const MetricsEdit = ({ dat, setEditMetricData, editMetricData }) => {
     }
 
     const handleSubmit = () => {
-        if (data?.is_multi_year) {
+        if (!data?.is_multi_year) {
             axiosInstance(`/metrics/${data?.metric_id}/`, {
                 method: "PATCH", data: { answer: metricAnswer }
             }).then(res => { alert("Success"); })
         } else {
-            let url = "/metrics-answer/"
-            let method = "POST"
+            let url = metricAnswer === "" ? "/metrics-answer/" : `/metrics-answer/${answerData?.id}/`
+            let method = metricAnswer === "" ? "POST" : "PUT"
             axiosInstance(url, {
-                method: method, data: { year: metricAnswer, metric_id: "" }
+                method: method, data: { year: year, metric_id: data?.metric_id, answer: metricAnswer }
             }).then(res => { alert("Success"); })
         }
     }
@@ -139,15 +140,16 @@ const MetricsEdit = ({ dat, setEditMetricData, editMetricData }) => {
     }
 
     const handleCancel = () => {
-        setEditMetricData({ ...editMetricData, show: false })
+        setEditMetricData({ ...editMetricData, show: false });
+        setMetricAnswer("");
     }
 
     const handleYearChange = (event) => {
         setYear({ [event.target.name]: event.target.value })
-        axiosInstance(`/metrics/?year=${event.target.value}`, { method: "GET" })
+        axiosInstance(`/metric-answer/?metric_id=${data?.metric_id}&year=${event.target.value}`, { method: "GET" })
             .then(res => {
-                let dat = res?.data?.filter(item => item?.metric_id === data?.metric_id);
-                setData(dat?.[0])
+                setMetricAnswer(res?.data?.[0]?.answer || "")
+                setAnswerData(res?.data?.[0])
             })
     }
 
