@@ -12,7 +12,6 @@ import MetricsView from './pages/MetricsView';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import KeyIdentifier from './pages/KeyIdentifier';
-import MetricsEdit from './pages/Metrics';
 
 
 function PrivateOutlet() {

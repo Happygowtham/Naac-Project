@@ -5,8 +5,7 @@ from .views import progress
 
 router = routers.DefaultRouter()
 router.register('criteria', CriteriaViewSet, basename='criteria')
-router.register('key-identifiers', KeyIdentifiersViewSet,
-                basename='key-identifiers')
+router.register('key-identifiers', KeyIdentifiersViewSet,basename='key-identifiers')
 router.register('metrics', MetricViewSet, basename='metrics')
 router.register('location', LocationViewSet, basename='location')
 router.register('evidence', EvidenceViewSet, basename='evidence')
@@ -18,7 +17,5 @@ router.register('metric-answer', MetricAnswerViewSet, basename='metric-answer')
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
-    # path('metrics-bulk-create/', MetricBulkCreate.as_view(), name='metric-bulk-create'),
     path('progress/', progress.progress_view, name='progress'),
-    # path('metrics-bulk-update/', MetricBulkUpdate.as_view(), name='metric-bulk-update')
 ]
