@@ -36,8 +36,19 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
                 let activeYear = res?.data?.filter(yer => yer?.is_active_year === true)
                 setYear({ year: activeYear?.[0]?.id })
             })
+        setTimeout(() => {
+            data?.is_multi_year && getAnswerData()
+        }, 1500)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const getAnswerData = (event) => {
+        axiosInstance(`/metric-answer/?metric_id=${data?.metric_id}&year=${event?.target?.value || year?.year}`, { method: "GET" })
+            .then(res => {
+                setMetricAnswer(res?.data?.[0]?.answer || "")
+                setAnswerData(res?.data?.[0])
+            })
+    }
 
     const handleClickOpen = (id) => {
         setOpen(true);
@@ -83,17 +94,22 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
         setMetricAnswer(event?.target?.value)
     }
 
+    const handleCancel = () => {
+        setEditMetricData({ ...editMetricData, show: false });
+        setMetricAnswer("");
+    }
+
     const handleSubmit = () => {
         if (!data?.is_multi_year) {
             axiosInstance(`/metrics/${data?.metric_id}/`, {
                 method: "PATCH", data: { answer: metricAnswer }
             }).then(res => { alert("Success"); })
         } else {
-            let url = metricAnswer === "" ? "/metrics-answer/" : `/metrics-answer/${answerData?.id}/`
-            let method = metricAnswer === "" ? "POST" : "PUT"
+            let url = answerData?.id ? `/metric-answer/${answerData?.id}/` : "/metric-answer/"
+            let method = answerData?.id ? "PUT" : "POST"
             axiosInstance(url, {
-                method: method, data: { year: year, metric_id: data?.metric_id, answer: metricAnswer }
-            }).then(res => { alert("Success"); })
+                method: method, data: { year: year?.year, metric_id: data?.metric_id, answer: metricAnswer }
+            }).then(res => { alert("Success"); handleCancel() })
         }
     }
 
@@ -139,18 +155,9 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
         }
     }
 
-    const handleCancel = () => {
-        setEditMetricData({ ...editMetricData, show: false });
-        setMetricAnswer("");
-    }
-
     const handleYearChange = (event) => {
         setYear({ [event.target.name]: event.target.value })
-        axiosInstance(`/metric-answer/?metric_id=${data?.metric_id}&year=${event.target.value}`, { method: "GET" })
-            .then(res => {
-                setMetricAnswer(res?.data?.[0]?.answer || "")
-                setAnswerData(res?.data?.[0])
-            })
+        getAnswerData(event)
     }
 
     return (
