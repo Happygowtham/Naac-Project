@@ -24,7 +24,7 @@ export default function LoginForm() {
           localStorage.setItem("naac_dbcy_user", btoa(JSON.stringify(res?.data)));
           navigate("/dashboard");
         }).catch(err => {
-          console.log('err: ', err);
+          alert("Please provide valid credentials")
         })
     }
   }

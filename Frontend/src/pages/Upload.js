@@ -22,7 +22,7 @@ const Upload = ({ evidenceData, evidenceErrors, open, handleClose, locationOptio
                 maxWidth="sm"
             >
                 <DialogTitle
-                >Subscribe
+                >Upload File
                     <IconButton
                         aria-label="close"
                         onClick={handleClose}
