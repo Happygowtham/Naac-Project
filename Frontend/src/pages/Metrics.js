@@ -1,9 +1,10 @@
-import { Box, Button, Card, FormControl, IconButton, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import axiosInstance from "src/AxiosInstance";
 import Upload from "./Upload";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
@@ -22,6 +23,7 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
     const [year, setYear] = useState({ year: "" });
     const [answerData, setAnswerData] = useState();
     const [metricAnswer, setMetricAnswer] = useState(data?.answer || "");
+    const [uploadAnother, setUploadAnother] = useState(false);
 
     useEffect(() => {
         axiosInstance(`/location`, { method: "GET" })
@@ -134,7 +136,15 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
                 }
             }).then(res => {
                 alert("Success");
-                handleClose();
+                setOpen(false);
+                setUploadAnother(true);
+                setEvidenceData({
+                    location: "",
+                    status: "In-Progress",
+                    description: "",
+                    evidence: "",
+                    year: ""
+                })
             })
         }
     }
@@ -171,6 +181,35 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
                 evidenceErrors={evidenceErrors}
                 evidenceData={evidenceData}
             />
+            <Dialog
+                open={uploadAnother}
+                onClose={() => setUploadAnother(false)}
+                fullWidth={true}
+                maxWidth="sm"
+            >
+                <DialogTitle
+                >Upload another document
+                    <IconButton
+                        aria-label="close"
+                        onClick={() => setUploadAnother(false)}
+                        sx={{
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    <Typography sx={{ fontWeigh: "bold", fontSize: "16px" }}>Do you want to upload another document?</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setUploadAnother(false)}>Cancel</Button>
+                    <Button onClick={() => setOpen(true)}>Upload another document</Button>
+                </DialogActions>
+            </Dialog>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="h6" sx={{ pl: 3 }}>{data?.key_identifiers?.number} - {data?.key_identifiers?.name}</Typography>
                 {data?.is_multi_year ?
@@ -218,10 +257,11 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
                 <Card sx={{ p: 2, m: 1 }}>
                     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                         <Typography>{data?.number} - {data?.question}</Typography>
-                        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                        <Box sx={{ justifyContent: "flex-end", textAlign: "center" }}>
                             <IconButton onClick={() => handleClickOpen(data?.metric_id)} color="primary" aria-label="upload picture" component="label">
                                 <CloudUploadIcon />
                             </IconButton>
+                            <Typography sx={{ fontWeight: "bold" }}>Upload Document</Typography>
                         </Box>
                     </Box>
                     {
