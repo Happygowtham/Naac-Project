@@ -265,25 +265,26 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
                         </Box>
                     </Box>
                     {
-                        data?.type === "QLM" ?
-                            <TextField
-                                name={data?.metric_id}
-                                onChange={(e) => handleChange(e, data?.metric_id)}
-                                multiline
-                                fullWidth
-                                value={metricAnswer}
-                                rows={4}
-                                sx={{ mt: 1 }}
-                            />
-                            :
-                            <TextField
-                                name={data?.metric_id}
-                                onChange={(e) => handleChange(e, data?.metric_id)}
-                                size="small"
-                                sx={{ mt: 1 }}
-                                type="number"
-                                value={metricAnswer}
-                            />
+                        data?.is_multi_year ? "" :
+                            data?.type === "QLM" ?
+                                <TextField
+                                    name={data?.metric_id}
+                                    onChange={(e) => handleChange(e, data?.metric_id)}
+                                    multiline
+                                    fullWidth
+                                    value={metricAnswer}
+                                    rows={4}
+                                    sx={{ mt: 1 }}
+                                />
+                                :
+                                <TextField
+                                    name={data?.metric_id}
+                                    onChange={(e) => handleChange(e, data?.metric_id)}
+                                    size="small"
+                                    sx={{ mt: 1 }}
+                                    type="number"
+                                    value={metricAnswer}
+                                />
                     }
                 </Card>
             </>
