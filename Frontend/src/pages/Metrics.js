@@ -18,6 +18,7 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
         evidence: "",
         metric_id: ""
     });
+
     const [evidenceErrors, setEvidenceErrors] = useState([]);
     const [yearOptions, setYearOptions] = useState([]);
     const [year, setYear] = useState({ year: "" });
@@ -139,6 +140,7 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
                 setOpen(false);
                 setUploadAnother(true);
                 setEvidenceData({
+                    ...evidenceData,
                     location: "",
                     status: "In-Progress",
                     description: "",
