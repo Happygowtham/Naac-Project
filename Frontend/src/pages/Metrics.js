@@ -217,26 +217,7 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
             </Dialog>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="h6" sx={{ pl: 3 }}>{data?.key_identifiers?.number} - {data?.key_identifiers?.name}</Typography>
-                {data?.is_multi_year ?
-                    <FormControl sx={{ mr: 2 }}>
-                        <InputLabel id="demo-simple-select-label" size="small">Select Year</InputLabel>
-                        <Select
-                            size="small"
-                            name="year"
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            label="Select Year"
-                            value={year?.year}
-                            onChange={handleYearChange}
-                        >
-                            {yearOptions?.map(res => {
-                                return (
-                                    <MenuItem value={res?.id}>{res?.name}</MenuItem>
-                                )
-                            })}
-                        </Select>
-                    </FormControl>
-                    :
+                {!data?.is_multi_year &&
                     <FormControl sx={{ mr: 2 }}>
                         <InputLabel id="demo-simple-select-label" size="small">Select Year</InputLabel>
                         <Select
@@ -256,7 +237,6 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
                         </Select>
                     </FormControl>
                 }
-
             </Box>
             <>
                 <Card sx={{ p: 2, m: 1 }}>

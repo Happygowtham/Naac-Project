@@ -26,21 +26,32 @@ const MultiYearAnswer = ({ data, year, handleCancel }) => {
         setMetricAnswer(temp);
     }
 
+
+    const validate = () => {
+        let temp = []
+        let vals = metricAnswer?.forEach(res => temp.push(res?.answer))
+        return temp.includes("") ? false : true;
+    }
+
     const handleSubmit = () => {
-        metricAnswer?.forEach(res => {
-            let url = res?.id ? `/metric-answer/${res?.id}/` : "/metric-answer/"
-            let method = res?.id ? "PUT" : "POST"
-            axiosInstance(url, {
-                method: method, data: { year: year?.year, metric_id: data?.metric_id, answer: res?.answer }
+        if (validate()) {
+            metricAnswer?.forEach(res => {
+                let url = res?.id ? `/metric-answer/${res?.id}/` : "/metric-answer/"
+                let method = res?.id ? "PUT" : "POST"
+                axiosInstance(url, {
+                    method: method, data: { year: year?.year, metric_id: data?.metric_id, answer: res?.answer }
+                })
             })
-        })
-        alert("Success");
+            alert("Success");
+        } else {
+            alert("Please Enter all the response.")
+        }
+
     }
 
     const onCancel = () => {
         handleCancel()
     }
-
 
     return (
         <>
@@ -81,7 +92,12 @@ const MultiYearAnswer = ({ data, year, handleCancel }) => {
             }
             <Box sx={{ display: "flex", justifyContent: "flex-end", m: 1 }}>
                 <Button size="small" sx={{ mr: 2 }} variant="contained" color="error" onClick={onCancel}>Cancel</Button>
-                <Button size="small" variant="contained" onClick={handleSubmit}>Submit</Button>
+                <Button
+                    size="small"
+                    variant="contained"
+                    onClick={handleSubmit}
+                // disabled={Object}
+                >Submit</Button>
             </Box>
         </>
     )

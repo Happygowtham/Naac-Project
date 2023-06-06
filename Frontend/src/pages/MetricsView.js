@@ -69,7 +69,6 @@ const MetricsView = () => {
                     />
                     :
                     <>
-
                         <Box sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
                             <Typography variant="h5">Criterio {Object.values(metricData)?.[0]?.[0]?.criteria?.number} - {Object.values(metricData)?.[0]?.[0]?.criteria?.name}</Typography>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -100,7 +99,6 @@ const MetricsView = () => {
                                     <>
                                         <Typography variant="h6" sx={{ pl: 3 }}>{res?.[0]?.key_identifiers?.number} - {res?.[0]?.key_identifiers?.name}</Typography>
                                         {res?.map((item) => {
-                                            console.log('item: ', item);
                                             return (
                                                 <>
                                                     <Card sx={{ p: 2, m: 1, cursor: canEdit && "pointer" }} onClick={() => canEdit && handleEditClick(item)}>
