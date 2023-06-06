@@ -5,9 +5,10 @@ import axiosInstance from "src/AxiosInstance";
 import Upload from "./Upload";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloseIcon from '@mui/icons-material/Close';
+import MultiYearAnswer from "./MultiYearAnswer";
 
 
-const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
+const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
 
     const [open, setOpen] = useState(false);
     const [locationOptions, setLocationOptions] = useState([]);
@@ -24,6 +25,7 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
     const [year, setYear] = useState({ year: "" });
     const [answerData, setAnswerData] = useState();
     const [metricAnswer, setMetricAnswer] = useState(data?.answer || "");
+    // const [multiMetricAnswer, setMultiMetricAnswer] = useState(data?.answer || "");
     const [uploadAnother, setUploadAnother] = useState(false);
 
     useEffect(() => {
@@ -98,6 +100,7 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
     }
 
     const handleCancel = () => {
+        getData()
         setEditMetricData({ ...editMetricData, show: false });
         setMetricAnswer("");
     }
@@ -267,34 +270,46 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData }) => {
                         </Box>
                     </Box>
                     {
-                        data?.is_multi_year ? "" :
-                            data?.type === "QLM" ?
-                                <TextField
-                                    name={data?.metric_id}
-                                    onChange={(e) => handleChange(e, data?.metric_id)}
-                                    multiline
-                                    fullWidth
-                                    value={metricAnswer}
-                                    rows={4}
-                                    sx={{ mt: 1 }}
+                        data?.is_multi_year ?
+                            <>
+                                <MultiYearAnswer
+                                    data={data}
+                                    year={year}
+                                    handleCancel={handleCancel}
                                 />
-                                :
-                                <TextField
-                                    name={data?.metric_id}
-                                    onChange={(e) => handleChange(e, data?.metric_id)}
-                                    size="small"
-                                    sx={{ mt: 1 }}
-                                    type="number"
-                                    value={metricAnswer}
-                                />
+                            </>
+
+                            :
+                            <>
+                                {
+                                    data?.type === "QLM" ?
+                                        <TextField
+                                            name={data?.metric_id}
+                                            onChange={(e) => handleChange(e, data?.metric_id)}
+                                            multiline
+                                            fullWidth
+                                            value={metricAnswer}
+                                            rows={4}
+                                            sx={{ mt: 1 }}
+                                        />
+                                        :
+                                        <TextField
+                                            name={data?.metric_id}
+                                            onChange={(e) => handleChange(e, data?.metric_id)}
+                                            size="small"
+                                            sx={{ mt: 1 }}
+                                            type="number"
+                                            value={metricAnswer}
+                                        />
+                                }
+                                <Box sx={{ display: "flex", justifyContent: "flex-end", m: 1 }}>
+                                    <Button size="small" sx={{ mr: 2 }} variant="contained" color="error" onClick={handleCancel}>Cancel</Button>
+                                    <Button size="small" variant="contained" disabled={metricAnswer === ""} onClick={handleSubmit}>Submit</Button>
+                                </Box>
+                            </>
                     }
                 </Card>
             </>
-            <Box sx={{ display: "flex", justifyContent: "flex-end", m: 1 }}>
-                <Button size="small" sx={{ mr: 2 }} variant="contained" color="error" onClick={handleCancel}>Cancel</Button>
-                <Button size="small" variant="contained" disabled={metricAnswer === ""} onClick={handleSubmit}>Submit</Button>
-            </Box>
-
         </>
     )
 }

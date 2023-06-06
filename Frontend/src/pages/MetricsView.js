@@ -65,6 +65,7 @@ const MetricsView = () => {
                         data={editMetricData?.item}
                         setEditMetricData={setEditMetricData}
                         editMetricData={editMetricData}
+                        getData={getData}
                     />
                     :
                     <>
@@ -99,6 +100,7 @@ const MetricsView = () => {
                                     <>
                                         <Typography variant="h6" sx={{ pl: 3 }}>{res?.[0]?.key_identifiers?.number} - {res?.[0]?.key_identifiers?.name}</Typography>
                                         {res?.map((item) => {
+                                            console.log('item: ', item);
                                             return (
                                                 <>
                                                     <Card sx={{ p: 2, m: 1, cursor: canEdit && "pointer" }} onClick={() => canEdit && handleEditClick(item)}>

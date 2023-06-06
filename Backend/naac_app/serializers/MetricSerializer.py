@@ -14,8 +14,10 @@ class MetricSerializer(FlexFieldsModelSerializer):
     #         raise serializers.ValidationError("Type doesn't match.")
     #     return super(MetricSerializer,self).validate(attrs)
 
+
     def to_representation(self, data):
         ret = super().to_representation(data)
         ret['criteria'] = {"id":data.criteria.criteria_id, "name": data.criteria.title, "number": data.criteria.number}
         ret['key_identifiers'] = {"id":data.key_identifier.key_identifiers_id, "name": data.key_identifier.title,  "number": data.key_identifier.number}
+        ret['year_options'] = data.year.values('id', 'from_year', 'to_year')
         return ret
