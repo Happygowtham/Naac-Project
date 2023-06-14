@@ -9,11 +9,10 @@ import MultiYearAnswer from "./MultiYearAnswer";
 
 
 const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
-    console.log('data: ', data);
 
     const [open, setOpen] = useState(false);
     const [locationOptions, setLocationOptions] = useState([]);
-    const [benchValue, setBenchValue] = useState("");
+    const [benchValue, setBenchValue] = useState(data?.bench_mark_value || "");
     const [evidenceData, setEvidenceData] = useState({
         location: "",
         status: "In-Progress",
@@ -303,6 +302,7 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
                     <TextField
                         name="benchmark"
                         size="small"
+                        value={benchValue}
                         onChange={e => setBenchValue(e.target.value)}
                         placeholder={`In ${data?.bench_mark_type === "num" ? "Number" : data?.bench_mark_type === "per" ? "Percentage" : "Charecter"}`}
                         type={["num", "per"].includes(data?.bench_mark_type) ? "number" : "text"}
