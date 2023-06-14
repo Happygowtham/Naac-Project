@@ -9,9 +9,11 @@ import MultiYearAnswer from "./MultiYearAnswer";
 
 
 const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
+    console.log('data: ', data);
 
     const [open, setOpen] = useState(false);
     const [locationOptions, setLocationOptions] = useState([]);
+    const [benchValue, setBenchValue] = useState("");
     const [evidenceData, setEvidenceData] = useState({
         location: "",
         status: "In-Progress",
@@ -175,6 +177,13 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
         getAnswerData(event)
     }
 
+    const handleSubmitBenchmark = () => {
+        console.log();
+        axiosInstance(`/metrics/${data?.metric_id}/`, {
+            method: "PATCH", data: { bench_mark_value: benchValue }
+        }).then(res => { alert("Success"); })
+    }
+
     return (
         <>
             <Upload
@@ -288,6 +297,20 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
                                 </Box>
                             </>
                     }
+                </Card>
+                <Card sx={{ p: 2, m: 1 }}>
+                    <Typography variant="h6">Benchmark Value</Typography>
+                    <TextField
+                        name="benchmark"
+                        size="small"
+                        onChange={e => setBenchValue(e.target.value)}
+                        placeholder={`In ${data?.bench_mark_type === "num" ? "Number" : data?.bench_mark_type === "per" ? "Percentage" : "Charecter"}`}
+                        type={["num", "per"].includes(data?.bench_mark_type) ? "number" : "text"}
+                        onKeyPress={(e) => e?.target?.value?.length === 7 && e.preventDefault()}
+                    />
+                    <Button disabled={benchValue === ''} sx={{ ml: 2 }} variant="contained" size="small" onClick={handleSubmitBenchmark}>
+                        Submit
+                    </Button>
                 </Card>
             </>
         </>
