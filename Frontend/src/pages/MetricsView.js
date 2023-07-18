@@ -104,6 +104,10 @@ const MetricsView = () => {
                                                     <Card sx={{ p: 2, m: 1, cursor: canEdit && "pointer" }} onClick={() => canEdit && handleEditClick(item)}>
                                                         <Typography sx={{ fontWeight: "600" }}>{item?.number} - {item?.question} </Typography>
                                                         {
+                                                            item?.bench_mark_value &&
+                                                            <Typography sx={{ mt: 1 }}>&emsp; <b>Bench Mark Value:</b> {item?.bench_mark_value}</Typography>
+                                                        }
+                                                        {
                                                             !item?.is_multi_year ?
                                                                 <Typography sx={{ mt: 1 }}>&emsp; <b>Response:</b> {item?.answer}</Typography>
                                                                 :

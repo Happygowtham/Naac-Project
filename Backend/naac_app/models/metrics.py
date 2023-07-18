@@ -29,7 +29,7 @@ class Metrics(models.Model):
     question = models.CharField(max_length=254, null=True, blank=True)
     answer = models.TextField(null=True, blank=True)
     is_multi_year = models.BooleanField(default=False)
-    bench_mark_value = models.CharField(max_length=254, null=True)
+    bench_mark_value = models.CharField(max_length=254, null=True, blank=True)
     bench_mark_type = models.CharField(
         max_length=4, choices=BENCH_MARK_CHOICES, null=True)
 
