@@ -21,7 +21,11 @@ const navConfig = [
     path: '/metrics/1',
     icon: icon('ic_user'),
   },
-
+  {
+    title: 'Benchmark Score',
+    path: '/benchmark',
+    icon: icon('ic_lock'),
+  },
   // {
   //   title: 'blog',
   //   path: '/blog',

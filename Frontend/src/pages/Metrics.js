@@ -262,7 +262,6 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
                                     handleCancel={handleCancel}
                                 />
                             </>
-
                             :
                             <>
                                 {
@@ -299,10 +298,9 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
                         name="benchmark"
                         size="small"
                         value={benchValue}
-                        onChange={e => { (data?.bench_mark_type === "per" && e.target.value <= 100) ? setBenchValue(e.target.value) : data?.bench_mark_type !== "per" && setBenchValue(e.target.value) }}
-                        placeholder={`In ${data?.bench_mark_type === "num" ? "Number" : data?.bench_mark_type === "per" ? "Percentage" : "Charecter"}`}
-                        type={["num", "per"].includes(data?.bench_mark_type) ? "number" : "text"}
-                        onKeyPress={(e) => (e?.target?.value?.length === 7 && data?.bench_mark_type !== "char") && e.preventDefault()}
+                        onChange={e => setBenchValue(e.target.value)}
+                        placeholder={`In Number`}
+                        type={"number"}
                     />
                     <Button disabled={benchValue === ''} sx={{ ml: 2 }} variant="contained" size="small" onClick={handleSubmitBenchmark}>
                         Submit

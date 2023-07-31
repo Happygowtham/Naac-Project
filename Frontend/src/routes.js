@@ -12,6 +12,7 @@ import MetricsView from './pages/MetricsView';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import KeyIdentifier from './pages/KeyIdentifier';
+import BenchmarkScore from './pages/BenchmarkReport';
 
 
 function PrivateOutlet() {
@@ -39,6 +40,7 @@ export default function Router() {
         <Route path='/criteria' element={<CriteriaPage />} />
         <Route path='/products' element={<ProductsPage />} />
         <Route path='/blog' element={<BlogPage />} />
+        <Route path='/benchmark' element={<BenchmarkScore />} />
       </Route>
     </Routes>
   )

@@ -9,12 +9,6 @@ TYPE_CHOICES = (
     ('QNM', 'Quantitative Count'),
 )
 
-BENCH_MARK_CHOICES = (
-    ('num', 'Number'),
-    ('per', 'Percentage'),
-    ('char', 'Characters'),
-)
-
 class Metrics(models.Model):
     metric_id = models.AutoField(primary_key=True)
     year = models.ManyToManyField(Year, related_name="year")
@@ -30,8 +24,6 @@ class Metrics(models.Model):
     answer = models.TextField(null=True, blank=True)
     is_multi_year = models.BooleanField(default=False)
     bench_mark_value = models.CharField(max_length=254, null=True, blank=True)
-    bench_mark_type = models.CharField(
-        max_length=4, choices=BENCH_MARK_CHOICES, null=True)
 
  
     class Meta:

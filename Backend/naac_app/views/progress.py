@@ -15,7 +15,6 @@ def progress_view(request):
                 identi_per = 0
             identifier_per.append(identi_per)
             identifier_data.update({identifier.key_identifiers_id: identi_per})
-        print(identifier_per)
         try:
             cri_per = (sum(identifier_per)/(len(identifier_per) * 100)) * 100
         except:

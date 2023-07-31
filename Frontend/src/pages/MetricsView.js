@@ -18,7 +18,7 @@ const MetricsView = () => {
     const [yearOptions, setYearOptions] = useState([]);
     const [year, setYear] = useState({ year: "" });
     const [editMetricData, setEditMetricData] = useState({ show: false, item: {} });
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     useEffect(() => {
         const data = JSON.parse(atob(localStorage.getItem('naac_dbcy_user')))
@@ -40,7 +40,6 @@ const MetricsView = () => {
         axiosInstance(`/metrics/?criteria=${id}&year=${year1 || year?.year}`, { method: "GET" })
             .then(res => {
                 let dat = res?.data;
-                console.log('dat: ', dat);
                 let eviData = groupBy(dat, "key_identifier");
                 setMetricData(eviData);
                 setLoading(false);
@@ -123,7 +122,7 @@ const MetricsView = () => {
                                                             <Typography sx={{ fontWeight: "600" }}>{item?.number} - {item?.question} </Typography>
                                                             {
                                                                 item?.bench_mark_value &&
-                                                                <Typography sx={{ mt: 1 }}>&emsp; <b>Bench Mark Value:</b> {item?.bench_mark_value}</Typography>
+                                                                <Typography sx={{ mt: 1 }}>&emsp; <b>Benchmark Value:</b> {item?.bench_mark_value}</Typography>
                                                             }
                                                             {
                                                                 !item?.is_multi_year ?
