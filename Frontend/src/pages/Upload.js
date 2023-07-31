@@ -97,9 +97,6 @@ const Upload = ({ evidenceData, evidenceErrors, open, handleClose, locationOptio
                                             : "Please Upload Document"
                                     }
                                 </ListItem>
-                                {evidenceData.evidence === "" &&
-                                    <Typography sx={{ color: "red", p: 0, fontWeight: "100" }}>Please upload Document</Typography>
-                                }
                             </Grid>
                             <Grid item xs={12} md={6} padding={1}>
                                 <Autocomplete

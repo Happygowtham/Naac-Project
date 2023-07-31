@@ -85,9 +85,6 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
         if ("description" in fieldValues) {
             temp.description = fieldValues.description?.trim() === "" ? "Description is required" : "";
         }
-        if ("evidence" in fieldValues) {
-            temp.evidence = fieldValues.evidence === "" ? "Evidence is required" : "";
-        }
 
         setEvidenceErrors({
             ...temp,
@@ -177,7 +174,6 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
     }
 
     const handleSubmitBenchmark = () => {
-        console.log();
         axiosInstance(`/metrics/${data?.metric_id}/`, {
             method: "PATCH", data: { bench_mark_value: benchValue }
         }).then(res => { alert("Success"); })

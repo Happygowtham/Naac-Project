@@ -9,7 +9,7 @@ class Evidence(models.Model):
     evidence_number = models.CharField(max_length=25, null=False)
     description = models.TextField(null=True)
     status = models.CharField(max_length=25, null=False)
-    evidence_file = models.FileField(upload_to=get_file_path)
+    evidence_file = models.FileField(upload_to=get_file_path, null=True, blank=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
     class Meta:
