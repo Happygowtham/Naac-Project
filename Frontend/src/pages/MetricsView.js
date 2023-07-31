@@ -1,4 +1,4 @@
-import { Box, Button, Card, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, Card, FormControl, InputLabel, MenuItem, Select, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -13,7 +13,6 @@ const MetricsView = () => {
 
     const { id } = useParams();
     const [metricData, setMetricData] = useState([]);
-    console.log('metricData: ', metricData);
     const [loading, setLoading] = useState(true);
     const [canEdit, setCanEdit] = useState(false);
     const [yearOptions, setYearOptions] = useState([]);
@@ -63,7 +62,7 @@ const MetricsView = () => {
         const element = document.getElementById("page-content");
         const options = {
             margin: [20, 20, 20, 20],
-            filename: "Metrics",
+            filename: `Criterio ${Object.values(metricData)?.[0]?.[0]?.criteria?.number} - ${Object.values(metricData)?.[0]?.[0]?.criteria?.name}`,
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
@@ -84,10 +83,12 @@ const MetricsView = () => {
                     />
                     :
                     <>
-                        <Button onClick={printtoPdf}>Print</Button>
                         <Box sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
                             <Typography variant="h5">Criterio {Object.values(metricData)?.[0]?.[0]?.criteria?.number} - {Object.values(metricData)?.[0]?.[0]?.criteria?.name}</Typography>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                                <Tooltip title="Click here to print PDF">
+                                    <Button variant="contained" sx={{ mr: 2 }} onClick={printtoPdf}>PDF</Button>
+                                </Tooltip>
                                 <FormControl fullWidth sx={{ mr: 2 }}>
                                     <InputLabel id="demo-simple-select-label" size="small">Select Year</InputLabel>
                                     <Select
