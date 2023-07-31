@@ -85,7 +85,7 @@ const MetricsView = () => {
                     :
                     <>
                         <Button onClick={printtoPdf}>Print</Button>
-                        <Box id="page-content" sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
+                        <Box sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
                             <Typography variant="h5">Criterio {Object.values(metricData)?.[0]?.[0]?.criteria?.number} - {Object.values(metricData)?.[0]?.[0]?.criteria?.name}</Typography>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <FormControl fullWidth sx={{ mr: 2 }}>
@@ -109,35 +109,37 @@ const MetricsView = () => {
                                 <Button sx={{ mr: 2 }} size="small" variant="contained" color="error" onClick={() => navigate("/dashboard")}>Back</Button>
                             </Box>
                         </Box>
-                        {
-                            Object.values(metricData)?.length > 0 && Object.values(metricData)?.map((res, id) => {
-                                return (
-                                    <>
-                                        <Typography variant="h6" sx={{ pl: 3 }}>{res?.[0]?.key_identifiers?.number} - {res?.[0]?.key_identifiers?.name}</Typography>
-                                        {res?.map((item) => {
-                                            return (
-                                                <>
-                                                    <Card sx={{ p: 2, m: 1, cursor: canEdit && "pointer" }} onClick={() => canEdit && handleEditClick(item)}>
-                                                        <Typography sx={{ fontWeight: "600" }}>{item?.number} - {item?.question} </Typography>
-                                                        {
-                                                            item?.bench_mark_value &&
-                                                            <Typography sx={{ mt: 1 }}>&emsp; <b>Bench Mark Value:</b> {item?.bench_mark_value}</Typography>
-                                                        }
-                                                        {
-                                                            !item?.is_multi_year ?
-                                                                <Typography sx={{ mt: 1 }}>&emsp; <b>Response:</b> {item?.answer}</Typography>
-                                                                :
-                                                                <MultiYearData metric={item?.metric_id} />
-                                                        }
-                                                        <Evidences year={year} metric_id={item?.metric_id} />
-                                                    </Card>
-                                                </>
-                                            )
-                                        })}
-                                    </>
-                                )
-                            })
-                        }
+                        <Box id="page-content" >
+                            {
+                                Object.values(metricData)?.length > 0 && Object.values(metricData)?.map((res, id) => {
+                                    return (
+                                        <>
+                                            <Typography variant="h6" sx={{ pl: 3 }}>{res?.[0]?.key_identifiers?.number} - {res?.[0]?.key_identifiers?.name}</Typography>
+                                            {res?.map((item) => {
+                                                return (
+                                                    <>
+                                                        <Card sx={{ p: 2, m: 1, cursor: canEdit && "pointer" }} onClick={() => canEdit && handleEditClick(item)}>
+                                                            <Typography sx={{ fontWeight: "600" }}>{item?.number} - {item?.question} </Typography>
+                                                            {
+                                                                item?.bench_mark_value &&
+                                                                <Typography sx={{ mt: 1 }}>&emsp; <b>Bench Mark Value:</b> {item?.bench_mark_value}</Typography>
+                                                            }
+                                                            {
+                                                                !item?.is_multi_year ?
+                                                                    <Typography sx={{ mt: 1 }}>&emsp; <b>Response:</b> {item?.answer}</Typography>
+                                                                    :
+                                                                    <MultiYearData metric={item?.metric_id} />
+                                                            }
+                                                            <Evidences year={year} metric_id={item?.metric_id} />
+                                                        </Card>
+                                                    </>
+                                                )
+                                            })}
+                                        </>
+                                    )
+                                })
+                            }
+                        </Box>
                     </>
                     : "Loading..."
             }
