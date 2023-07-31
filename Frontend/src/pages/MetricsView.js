@@ -7,12 +7,13 @@ import MetricsEdit from "./Metrics";
 import Evidences from "./Evidences";
 import { groupBy } from "src/Functions/Functions";
 import MultiYearData from "./MultiYearData";
-
+import html2pdf from 'html2pdf.js';
 
 const MetricsView = () => {
 
     const { id } = useParams();
     const [metricData, setMetricData] = useState([]);
+    console.log('metricData: ', metricData);
     const [loading, setLoading] = useState(true);
     const [canEdit, setCanEdit] = useState(false);
     const [yearOptions, setYearOptions] = useState([]);
@@ -40,6 +41,7 @@ const MetricsView = () => {
         axiosInstance(`/metrics/?criteria=${id}&year=${year1 || year?.year}`, { method: "GET" })
             .then(res => {
                 let dat = res?.data;
+                console.log('dat: ', dat);
                 let eviData = groupBy(dat, "key_identifier");
                 setMetricData(eviData);
                 setLoading(false);
@@ -57,6 +59,19 @@ const MetricsView = () => {
         setEditMetricData({ show: true, item: item })
     }
 
+    const printtoPdf = () => {
+        const element = document.getElementById("page-content");
+        const options = {
+            margin: [20, 20, 20, 20],
+            filename: "Metrics",
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+        }
+
+        html2pdf().from(element).set(options).save();
+    }
+
     return (
         <>
             {
@@ -69,7 +84,8 @@ const MetricsView = () => {
                     />
                     :
                     <>
-                        <Box sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
+                        <Button onClick={printtoPdf}>Print</Button>
+                        <Box id="page-content" sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
                             <Typography variant="h5">Criterio {Object.values(metricData)?.[0]?.[0]?.criteria?.number} - {Object.values(metricData)?.[0]?.[0]?.criteria?.name}</Typography>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <FormControl fullWidth sx={{ mr: 2 }}>
