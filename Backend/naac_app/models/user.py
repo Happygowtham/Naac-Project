@@ -24,7 +24,7 @@ class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, username=None, **extra_fields):
         """Create and save a regular User with the given email and password."""
-        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
         return self._create_user(username, password, email, **extra_fields)
 
@@ -42,7 +42,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    pimg = models.TextField(null=True)
     faculty_code = models.CharField(null=True, max_length=5)
     access = models.ManyToManyField(Criteria, related_name="user_access")
     access_year = models.ManyToManyField(Year, related_name="access_year")
