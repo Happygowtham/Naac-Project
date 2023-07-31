@@ -34,7 +34,7 @@ const MultiYearAnswer = ({ data, year, handleCancel }) => {
     }
 
     const handleSubmit = () => {
-        if (validate()) {
+        if (validate() && metricAnswer?.length === data?.year?.length) {
             metricAnswer?.forEach(res => {
                 let url = res?.id ? `/metric-answer/${res?.id}/` : "/metric-answer/"
                 let method = res?.id ? "PUT" : "POST"
