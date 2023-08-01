@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import { Alert, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import axiosInstance from "src/AxiosInstance";
@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 const Evidences = ({ metric_id, year }) => {
 
     const [evidenceData, setEvidenceData] = useState([]);
+    const [openAlert, setOpenAlert] = useState(false);
 
     useEffect(() => {
         getEvidences()
@@ -39,13 +40,21 @@ const Evidences = ({ metric_id, year }) => {
                 evidence_file: e.target.files?.[0],
             }
         }).then(res => {
-            alert("Success");
+            setOpenAlert(true);
             getEvidences()
         })
     }
 
     return (
         <>
+            <Snackbar
+                open={openAlert}
+                autoHideDuration={3000}
+                onClose={() => setOpenAlert(false)}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert variant="filled" severity="success">Submitted Successfully</Alert>
+            </Snackbar>
             {
                 evidenceData?.length > 0 &&
                 <TableContainer sx={{ mt: 3 }}>
@@ -76,7 +85,7 @@ const Evidences = ({ metric_id, year }) => {
                                                     :
                                                     <>
                                                         <input title="Upload Evidence" name="evidence" accept=".pdf,.docx,.doc,.xls,.xlsx" id="evidence" type="file" style={{ display: "none" }} onChange={(e) => handleUploadFile(e, row.id)} />
-                                                        <div className="upload_doc" onClick={() => document.getElementById("evidence").click()}>
+                                                        <div className="upload_doc" title="Upload Evidence" onClick={() => document.getElementById("evidence").click()}>
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
                                                                 xmlnsXlink="http://www.w3.org/1999/xlink"

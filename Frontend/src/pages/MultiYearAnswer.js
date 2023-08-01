@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Snackbar, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosInstance from "src/AxiosInstance";
 
@@ -6,6 +6,7 @@ import axiosInstance from "src/AxiosInstance";
 const MultiYearAnswer = ({ data, year, handleCancel }) => {
 
     const [metricAnswer, setMetricAnswer] = useState([]);
+    const [openAlert, setOpenAlert] = useState(false);
 
     useEffect(() => {
         data && getAnswerData(data)
@@ -42,7 +43,7 @@ const MultiYearAnswer = ({ data, year, handleCancel }) => {
                     method: method, data: { year: year?.year, metric_id: data?.metric_id, answer: res?.answer }
                 })
             })
-            alert("Success");
+            setOpenAlert(true);
         } else {
             alert("Please Enter all the response.")
         }
@@ -55,6 +56,14 @@ const MultiYearAnswer = ({ data, year, handleCancel }) => {
 
     return (
         <>
+            <Snackbar
+                open={openAlert}
+                autoHideDuration={3000}
+                onClose={() => setOpenAlert(false)}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert variant="filled" severity="success">Submitted Successfully</Alert>
+            </Snackbar>
             {
                 data?.year_options?.map((yearData, id) => {
                     return (

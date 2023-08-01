@@ -1,4 +1,4 @@
-import { Box, Button, Card, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import axiosInstance from "src/AxiosInstance";
@@ -11,6 +11,7 @@ import MultiYearAnswer from "./MultiYearAnswer";
 const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
 
     const [open, setOpen] = useState(false);
+    const [openAlert, setOpenAlert] = useState(false);
     const [locationOptions, setLocationOptions] = useState([]);
     const [benchValue, setBenchValue] = useState(data?.bench_mark_value || "");
     const [evidenceData, setEvidenceData] = useState({
@@ -107,13 +108,13 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
         if (!data?.is_multi_year) {
             axiosInstance(`/metrics/${data?.metric_id}/`, {
                 method: "PATCH", data: { answer: metricAnswer }
-            }).then(res => { alert("Success"); })
+            }).then(res => { setOpenAlert(true); })
         } else {
             let url = answerData?.id ? `/metric-answer/${answerData?.id}/` : "/metric-answer/"
             let method = answerData?.id ? "PUT" : "POST"
             axiosInstance(url, {
                 method: method, data: { year: year?.year, metric_id: data?.metric_id, answer: metricAnswer }
-            }).then(res => { alert("Success"); handleCancel() })
+            }).then(res => { setOpenAlert(true); handleCancel() })
         }
     }
 
@@ -137,7 +138,7 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
                     metrics: evidenceData?.metric_id
                 }
             }).then(res => {
-                alert("Success");
+                setOpenAlert(true);
                 setOpen(false);
                 setUploadAnother(true);
                 setEvidenceData({
@@ -176,11 +177,19 @@ const MetricsEdit = ({ data, setEditMetricData, editMetricData, getData }) => {
     const handleSubmitBenchmark = () => {
         axiosInstance(`/metrics/${data?.metric_id}/`, {
             method: "PATCH", data: { bench_mark_value: benchValue }
-        }).then(res => { alert("Success"); })
+        }).then(res => { setOpenAlert(true) })
     }
 
     return (
         <>
+            <Snackbar
+                open={openAlert}
+                autoHideDuration={3000}
+                onClose={() => setOpenAlert(false)}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert variant="filled" severity="success">Submitted Successfully</Alert>
+            </Snackbar>
             <Upload
                 handleEvidenceChange={handleEvidenceChange}
                 locationOptions={locationOptions}
