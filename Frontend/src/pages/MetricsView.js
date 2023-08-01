@@ -8,6 +8,7 @@ import Evidences from "./Evidences";
 import { groupBy } from "src/Functions/Functions";
 import MultiYearData from "./MultiYearData";
 import html2pdf from 'html2pdf.js';
+import ChartReport from "./Chart";
 
 const MetricsView = () => {
 
@@ -140,6 +141,8 @@ const MetricsView = () => {
                                 })
                             }
                         </Box>
+                        <Typography sx={{ m: 2, fontWeight: "bold" }} variant="h4">Evidences Status</Typography>
+                        <ChartReport metricData={metricData} />
                     </>
                     : "Loading..."
             }
