@@ -17,14 +17,14 @@ const navConfig = [
     icon: icon('ic_cart'),
   },
   {
-    title: 'metrics',
-    path: '/metrics/1',
-    icon: icon('ic_user'),
-  },
-  {
     title: 'Benchmark Score',
     path: '/benchmark',
     icon: icon('ic_lock'),
+  },
+  {
+    title: 'metrics - entry',
+    path: '/metrics/1',
+    icon: icon('ic_user'),
   },
   // {
   //   title: 'blog',

@@ -141,7 +141,7 @@ const MetricsView = () => {
                                 })
                             }
                         </Box>
-                        <Typography sx={{ m: 2, fontWeight: "bold" }} variant="h4">Evidences Status</Typography>
+                        <Typography sx={{ m: 2, fontWeight: "bold" }} variant="h4">Evidences Progress</Typography>
                         <ChartReport metricData={metricData} />
                     </>
                     : "Loading..."
