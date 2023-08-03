@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from naac_app.models import Criteria, KeyIdentifiers, Metrics, Evidence
+from django.db.models import Q
 
 def progress_view(request):
     criteria_data = {}
@@ -8,7 +9,7 @@ def progress_view(request):
         identifier_per = []
         for identifier in KeyIdentifiers.objects.filter(criteria=criteria):
             metrics_all = Metrics.objects.filter(key_identifier=identifier)
-            availed_metrics = set(list(Evidence.objects.filter(metrics__in=metrics_all).values_list("metrics__metric_id",flat=True)))
+            availed_metrics = set(list(Evidence.objects.filter(Q(metrics__in=metrics_all) & Q(evidence_file="")).values_list("metrics__metric_id",flat=True)))
             try:
                 identi_per = (len(availed_metrics)/len(metrics_all)) * 100
             except:
