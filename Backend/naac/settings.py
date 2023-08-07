@@ -71,11 +71,11 @@ WSGI_APPLICATION = 'naac.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "NAAC",
-        'USER': "postgres",
-        'PASSWORD': "postgres",
-        'HOST': "localhost",
-        'PORT': '5434'
+        'NAME': 'postgres',
+        'HOST': 'us-east-1.9dd03987-47ca-427e-8370-7e4cd5eba4f6.aws.ybdb.io',
+        'PORT': 5433,
+        'USER': 'admin',
+        'PASSWORD': '3sIQkj2KB_F3C5eXR_ju-LYcK7TLfq',
     }
 }
 
